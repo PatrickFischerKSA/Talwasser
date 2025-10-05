@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spielbrett - Talwasser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container-wide {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .spielbrett-header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .spielbrett-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .current-phase {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+        }
+
+        .timer-card, .phase-card, .score-card, .notes-card, .phase-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .timer-card h2, .phase-card h2, .score-card h2, .notes-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            color: #667eea;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-timer, .btn-timer-small {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-timer:hover, .btn-timer-small:hover {
+            background: #5568d3;
+        }
+
+        .btn-timer-small {
+            padding: 10px 15px;
+            background: #764ba2;
+        }
+
+        .btn-timer-small:hover {
+            background: #643a8a;
+        }
+
+        .phase-card {
+            margin-top: 20px;
+        }
+
+        .phase-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .phase-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .phase-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .phase-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .phase-btn small {
+            display: block;
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .phase-content {
+            min-height: 400px;
+        }
+
+        .phase-content h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .phase-content p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .phase-content ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .score-board {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .score-row span:first-child {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .score-controls button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .score-controls button:hover {
+            background: #5568d3;
+        }
+
+        .score-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .notes-card {
+            margin-top: 20px;
+        }
+
+        #sharedNotes {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wide">
+        <header class="spielbrett-header">
+            <h1>🏔️ Erinnerungen an Talwasser</h1>
+            <div class="current-phase" id="currentPhase">Phase 1: Ankunft</div>
+        </header>
+
+        <div class="main-grid">
+            <div class="left-panel">
+                <div class="timer-card">
+                    <h2>⏱️ Timer</h2>
+                    <div class="timer-display" id="timerDisplay">10:00</div>
+                    <div class="timer-controls">
+                        <button onclick="startTimer(10)" class="btn-timer">10 Min</button>
+                        <button onclick="startTimer(15)" class="btn-timer">15 Min</button>
+                        <button onclick="startTimer(30)" class="btn-timer">30 Min</button>
+                        <button onclick="pauseTimer()" class="btn-timer-small">Pause</button>
+                        <button onclick="resetTimer()" class="btn-timer-small">Reset</button>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <h2>📋 Spielphasen</h2>
+                    <div class="phase-nav">
+                        <button onclick="setPhase(1)" class="phase-btn active" data-phase="1">
+                            Phase 1<br><small>Ankunft</small>
+                        </button>
+                        <button onclick="setPhase(2)" class="phase-btn" data-phase="2">
+                            Phase 2<br><small>Streitfragen</small>
+                        </button>
+                        <button onclick="setPhase(3)" class="phase-btn" data-phase="3">
+                            Phase 3<br><small>Erinnerungen</small>
+                        </button>
+                        <button onclick="setPhase(4)" class="phase-btn" data-phase="4">
+                            Phase 4<br><small>Brief</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-panel">
+                <div id="phaseContent" class="phase-content">
+                    <h3>Phase 1: Ankunft</h3>
+                    <p>Willkommen zurück in Talwasser! Die Geschwister treffen sich nach langer Zeit wieder im alten Familienhaus.</p>
+                    <ul>
+                        <li>Jeder Spieler stellt seinen Charakter vor</li>
+                        <li>Beschreibt eure ersten Eindrücke</li>
+                        <li>Was hat sich verändert? Was ist gleich geblieben?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="score-card">
+                    <h2>🏆 Punktestand</h2>
+                    <div id="scoreBoard" class="score-board">
+                        <div class="score-row">
+                            <span>Xaver:</span>
+                            <div class="score-controls">
+                                <button onclick="changeScore('xaver', -1)">-</button>
+                                <span id="score-xaver" class="score-value">0</span>
+                                <button onclick="changeScore('xaver', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="score-row">
+                            <span>Agnes:</span>
+                            <div class="score-controls">
+                                <button onclick="changeScore('agnes', -1)">-</button>
+                                <span id="score-agnes" class="score-value">0</span>
+                                <button onclick="changeScore('agnes', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="score-row">
+                            <span>Rosa:</span>
+                            <div class="score-controls">
+                                <button onclick="changeScore('rosa', -1)">-</button>
+                                <span id="score-rosa" class="score-value">0</span>
+                                <button onclick="changeScore('rosa', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="score-row">
+                            <span>Dölf:</span>
+                            <div class="score-controls">
+                                <button onclick="changeScore('dolf', -1)">-</button>
+                                <span id="score-dolf" class="score-value">0</span>
+                                <button onclick="changeScore('dolf', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="score-row">
+                            <span>Franz:</span>
+                            <div class="score-controls">
+                                <button onclick="changeScore('franz', -1)">-</button>
+                                <span id="score-franz" class="score-value">0</span>
+                                <button onclick="changeScore('franz', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notes-card">
+                    <h2>📝 Notizen</h2>
+                    <textarea id="sharedNotes" placeholder="Gemeinsame Notizen..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval = null;
+        let timeRemaining = 600;
+        let isPaused = false;
+
+        const scores = {
+            xaver: 0,
+            agnes: 0,
+            rosa: 0,
+            dolf: 0,
+            franz: 0
+        };
+
+        const phaseContent = {
+            1: {
+                title: 'Phase 1: Ankunft',
+                content: `
+                    <h3>Phase 1: Ankunft</h3>
+                    <p>Willkommen zurück in Talwasser! Die Geschwister treffen sich nach langer Zeit wieder im alten Familienhaus.</p>
+                    <ul>
+                        <li>Jeder Spieler stellt seinen Charakter vor</li>
+                        <li>Beschreibt eure ersten Eindrücke</li>
+                        <li>Was hat sich verändert? Was ist gleich geblieben?</li>
+                    </ul>
+                `
+            },
+            2: {
+                title: 'Phase 2: Streitfragen',
+                content: `
+                    <h3>Phase 2: Streitfragen</h3>
+                    <p>Alte Konflikte und ungelöste Streitigkeiten kommen an die Oberfläche.</p>
+                    <ul>
+                        <li>Welche alten Konflikte gibt es zwischen den Geschwistern?</li>
+                        <li>Was wurde nie ausgesprochen?</li>
+                        <li>Wer hat wen enttäuscht?</li>
+                    </ul>
+                `
+            },
+            3: {
+                title: 'Phase 3: Erinnerungen',
+                content: `
+                    <h3>Phase 3: Erinnerungen</h3>
+                    <p>Gemeinsame Erinnerungen werden geteilt - schöne und schwierige Momente aus der Vergangenheit.</p>
+                    <ul>
+                        <li>Was sind eure prägendsten gemeinsamen Erinnerungen?</li>
+                        <li>Wie hat jeder die Kindheit erlebt?</li>
+                        <li>Welche Momente haben die Familie geprägt?</li>
+                    </ul>
+                `
+            },
+            4: {
+                title: 'Phase 4: Brief',
+                content: `
+                    <h3>Phase 4: Brief</h3>
+                    <p>Ein wichtiger Brief oder eine Nachricht wird entdeckt und verändert alles.</p>
+                    <ul>
+                        <li>Was steht in dem Brief?</li>
+                        <li>Wie reagieren die Geschwister darauf?</li>
+                        <li>Was bedeutet das für die Zukunft?</li>
+                    </ul>
+                `
+            }
+        };
+
+        function startTimer(minutes) {
+            clearInterval(timerInterval);
+            timeRemaining = minutes * 60;
+            isPaused = false;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                if (!isPaused && timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                    
+                    if (timeRemaining === 0) {
+                        clearInterval(timerInterval);
+                        alert('Zeit ist abgelaufen!');
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isPaused = !isPaused;
+            const pauseBtn = event.target;
+            pauseBtn.textContent = isPaused ? 'Weiter' : 'Pause';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = 600;
+            isPaused = false;
+            updateTimerDisplay();
+            const pauseBtn = document.querySelector('.btn-timer-small');
+            if (pauseBtn) pauseBtn.textContent = 'Pause';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function changeScore(player, delta) {
+            scores[player] = Math.max(0, scores[player] + delta);
+            document.getElementById(`score-${player}`).textContent = scores[player];
+        }
+
+        function setPhase(phaseNum) {
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeBtn = document.querySelector(`[data-phase="${phaseNum}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            document.getElementById('currentPhase').textContent = phaseContent[phaseNum].title;
+            document.getElementById('phaseContent').innerHTML = phaseContent[phaseNum].content;
+        }
+
+        updateTimerDisplay();
+    </script>
+</body>
+</html>

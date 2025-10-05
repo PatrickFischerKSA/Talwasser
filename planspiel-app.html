@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planspiel - Interaktive Anwendung</title>
+    <style>
+        /* ==================== GRUNDLEGENDES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #4a7c59;
+            --accent-color: #8b4513;
+            --water-blue: #4a90e2;
+            --bg-light: #f5f5dc;
+            --text-dark: #2c2c2c;
+            --border-color: #d4c5b9;
+            --warning-red: #c44536;
+            
+            --xaver-color: #5d8aa8;
+            --agnes-color: #e56b6f;
+            --rosa-color: #f4a6a3;
+            --dolf-color: #8b7355;
+            --franz-color: #6b8e23;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e8dcc4 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .container-wide {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        /* ==================== HEADER ==================== */
+        header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn-primary, .btn-secondary, .btn-role {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #704214;
+            transform: translateY(-2px);
+        }
+
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.3em;
+        }
+
+        .btn-role {
+            background: var(--water-blue);
+            color: white;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .btn-role:hover {
+            background: #357abd;
+        }
+
+        /* ==================== SETUP SECTION ==================== */
+        .setup-section {
+            margin-bottom: 40px;
+        }
+
+        .step-by-step {
+            display: grid;
+            gap: 20px;
+        }
+
+        .step {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .step h3 {
+            margin-top: 0;
+        }
+
+        .hint {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .role-assignments {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .role-assignment {
+            padding: 10px;
+            margin: 10px 0;
+            background: var(--bg-light);
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ==================== QUICK REFERENCE ==================== */
+        .quick-reference {
+            background: #fff9e6;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 40px 0;
+        }
+
+        .phase-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .phase {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--water-blue);
+        }
+
+        /* ==================== ROLLENKARTEN ==================== */
+        .role-selection {
+            margin: 40px 0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .role-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .role-display {
+            margin-top: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .role-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .role-header {
+            padding: 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .role-header.xaver { background: var(--xaver-color); }
+        .role-header.agnes { background: var(--agnes-color); }
+        .role-header.rosa { background: var(--rosa-color); }
+        .role-header.dolf { background: var(--dolf-color); }
+        .role-header.franz { background: var(--franz-color); }
+
+        .role-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .role-subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .role-body {
+            padding: 30px;
+            background: white;
+        }
+
+        .role-info {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .role-info p {
+            margin: 8px 0;
+        }
+
+        .role-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .role-section.secret {
+            background: #fff3e0;
+            border: 2px dashed var(--warning-red);
+        }
+
+        .quote {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--accent-color);
+            padding: 15px;
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .role-section ul {
+            margin-left: 25px;
+            margin-top: 15px;
+        }
+
+        .role-section li {
+            margin: 10px 0;
+        }
+
+        /* ==================== SPIELBRETT ==================== */
+        .spielbrett-body {
+            padding: 10px;
+        }
+
+        .spielbrett-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .spielbrett-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .current-phase {
+            background: var(--water-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Timer Card */
+        .timer-card, .phase-card, .score-card, .notes-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .timer-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-timer, .btn-timer-small {
+            padding: 10px;
+            background: var(--water-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-timer:hover, .btn-timer-small:hover {
+            background: #357abd;
+        }
+
+        .btn-timer-small {
+            grid-column: span 1;
+            background: var(--accent-color);
+        }
+
+        /* Phase Navigation */
+        .phase-nav {
+            display: grid;
+            gap: 10px;
+        }
+
+        .phase-btn {
+            padding: 15px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .phase-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .phase-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .phase-btn small {
+            display: block;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        /* Content Area */
+        .phase-content {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .phase-intro {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .question-card {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid var(--water-blue);
+        }
+
+        .question-title {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .voting-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff9e6;
+            border-radius: 8px;
+        }
+
+        .voting-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .vote-btn {
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .vote-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Score Board */
+        .score-board {
+            display: grid;
+            gap: 15px;
+        }
+
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: 5px;
+        }
+
+        .score-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .score-controls button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--water-blue);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .score-controls button:hover {
+            background: #357abd;
+        }
+
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Notes */
+        .notes-card textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        /* Brief Editor */
+        .brief-editor {
+            margin: 20px 0;
+        }
+
+        .brief-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-family: 'Georgia', serif;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .brief-header {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* ==================== LINKS SECTION ==================== */
+        .links-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
+            text-align: center;
+        }
+
+        .links-section a {
+            text-decoration: none;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .container, .container-wide {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .role-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== ANLEITUNG ==================== */
+        .anleitung-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        .example-box {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4caf50;
+        }
+
+        .tip-box {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        const roles = {
+            xaver: {
+                name: 'Xaver',
+                subtitle: 'Der Bürgermeister',
+                color: 'xaver',
+                info: {
+                    alter: '52 Jahre',
+                    beruf: 'Bürgermeister',
+                    familie: 'Verheiratet, 2 erwachsene Kinder'
+                },
+                description: 'Als langjähriger Bürgermeister kennen Sie die Gemeinde wie Ihre Westentasche. Sie müssen zwischen den verschiedenen Interessen vermitteln.',
+                quote: 'Das Wohl der Gemeinde steht über allem!',
+                ziele: [
+                    'Wiedergewählt werden',
+                    'Die Gemeinde vor Schaden bewahren',
+                    'Einen Kompromiss finden'
+                ]
+            },
+            agnes: {
+                name: 'Agnes',
+                subtitle: 'Die Umweltschützerin',
+                color: 'agnes',
+                info: {
+                    alter: '34 Jahre',
+                    beruf: 'Biologin',
+                    familie: 'Ledig, keine Kinder'
+                },
+                description: 'Sie kämpfen leidenschaftlich für den Schutz der Natur und sehen in jedem Bauprojekt eine Gefahr für die Umwelt.',
+                quote: 'Die Natur hat keine Stimme - außer unserer!',
+                ziele: [
+                    'Das Naturschutzgebiet bewahren',
+                    'Nachhaltige Lösungen durchsetzen',
+                    'Bewusstsein schaffen'
+                ]
+            },
+            rosa: {
+                name: 'Rosa',
+                subtitle: 'Die Geschäftsfrau',
+                color: 'rosa',
+                info: {
+                    alter: '45 Jahre',
+                    beruf: 'Unternehmerin',
+                    familie: 'Geschieden, 1 Kind'
+                },
+                description: 'Sie leiten mehrere lokale Geschäfte und sehen in jedem Projekt eine wirtschaftliche Chance oder Bedrohung.',
+                quote: 'Ohne Wirtschaft stirbt das Dorf!',
+                ziele: [
+                    'Wirtschaftswachstum fördern',
+                    'Arbeitsplätze sichern',
+                    'Profitabel bleiben'
+                ]
+            },
+            dolf: {
+                name: 'Dolf',
+                subtitle: 'Der Landwirt',
+                color: 'dolf',
+                info: {
+                    alter: '58 Jahre',
+                    beruf: 'Landwirt',
+                    familie: 'Verheiratet, 3 Kinder'
+                },
+                description: 'Ihr Hof liegt seit Generationen in der Familie. Veränderungen sehen Sie skeptisch, aber Sie wollen das Beste für Ihre Kinder.',
+                quote: 'Das Land ernährt uns seit 200 Jahren!',
+                ziele: [
+                    'Den Familienbetrieb erhalten',
+                    'Tradition bewahren',
+                    'Für die nächste Generation vorsorgen'
+                ]
+            },
+            franz: {
+                name: 'Franz',
+                subtitle: 'Der Bauplaner',
+                color: 'franz',
+                info: {
+                    alter: '41 Jahre',
+                    beruf: 'Architekt',
+                    familie: 'Verheiratet, 2 Kinder'
+                },
+                description: 'Sie haben die Vision für eine moderne Gemeinde und glauben an Fortschritt durch sorgfältige Planung.',
+                quote: 'Stillstand ist Rückschritt!',
+                ziele: [
+                    'Moderne Infrastruktur schaffen',
+                    'Die Gemeinde zukunftsfähig machen',
+                    'Innovation fördern'
+                ]
+            }
+        };
+
+        const phases = [
+            { id: 1, name: 'Einführung', duration: 10, description: 'Kennenlernen und Rollenfindung' },
+            { id: 2, name: 'Problemstellung', duration: 15, description: 'Vorstellung des Konflikts' },
+            { id: 3, name: 'Diskussion', duration: 30, description: 'Freie Diskussion der Parteien' },
+            { id: 4, name: 'Abstimmung', duration: 10, description: 'Demokratische Entscheidung' },
+            { id: 5, name: 'Reflexion', duration: 20, description: 'Auswertung und Lernen' }
+        ];
+
+        let currentView = 'home';
+        let currentPhase = 1;
+        let timerSeconds = 600;
+        let timerRunning = false;
+        let timerInterval = null;
+        let scores = {
+            xaver: 0,
+            agnes: 0,
+            rosa: 0,
+            dolf: 0,
+            franz: 0
+        };
+
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (currentView === 'home') {
+                app.innerHTML = renderHome();
+            } else if (currentView === 'roles') {
+                app.innerHTML = renderRoles();
+            } else if (currentView === 'spielbrett') {
+                app.innerHTML = renderSpielbrett();
+            } else if (currentView.startsWith('role-')) {
+                const roleName = currentView.replace('role-', '');
+                app.innerHTML = renderRoleCard(roleName);
+            }
+            
+            attachEventListeners();
+        }
+
+        function renderHome() {
+            return `
+                <div class="container">
+                    <header>
+                        <h1>Planspiel: Gemeindeentscheidung</h1>
+                        <p class="subtitle">Ein interaktives Rollenspiel über Demokratie und Kompromisse</p>
+                    </header>
+
+                    <div class="setup-section">
+                        <h2>Willkommen zum Planspiel!</h2>
+                        <p>In diesem Planspiel übernehmen Sie die Rolle eines Gemeindebewohners und müssen gemeinsam mit anderen eine wichtige Entscheidung treffen.</p>
+                        
+                        <div class="step-by-step">
+                            <div class="step">
+                                <h3>Schritt 1: Rollen verteilen</h3>
+                                <p>Jeder Spieler erhält eine geheime Rolle mit eigenen Zielen und Perspektiven.</p>
+                                <button class="btn-primary" onclick="changeView('roles')">Zu den Rollenkarten →</button>
+                            </div>
+
+                            <div class="step">
+                                <h3>Schritt 2: Spielbrett öffnen</h3>
+                                <p>Der Spielleiter öffnet das Spielbrett zum Zeitmanagement und zur Punkteverwaltung.</p>
+                                <button class="btn-primary" onclick="changeView('spielbrett')">Zum Spielbrett →</button>
+                            </div>
+
+                            <div class="step">
+                                <h3>Schritt 3: Spielen!</h3>
+                                <p>Diskutieren Sie in Ihrer Rolle und finden Sie gemeinsam eine Lösung.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-reference">
+                        <h2>Phasen-Übersicht</h2>
+                        <div class="phase-list">
+                            ${phases.map(p => `
+                                <div class="phase">
+                                    <strong>Phase ${p.id}: ${p.name}</strong> (${p.duration} Min.)
+                                    <br><small>${p.description}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="anleitung-section">
+                        <h2>Spielanleitung</h2>
+                        <div class="tip-box">
+                            <h3>💡 Wichtige Tipps</h3>
+                            <ul>
+                                <li>Bleiben Sie in Ihrer Rolle</li>
+                                <li>Hören Sie den anderen aktiv zu</li>
+                                <li>Suchen Sie nach Kompromissen</li>
+                                <li>Jede Meinung ist wertvoll</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoles() {
+            return `
+                <div class="container">
+                    <header>
+                        <h1>Rollenkarten</h1>
+                        <p class="subtitle">Wählen Sie Ihre Rolle (geheim!)</p>
+                    </header>
+
+                    <div class="warning">
+                        ⚠️ Achtung: Schauen Sie sich nur Ihre eigene Rollenkarte an! Jede Rolle hat geheime Informationen.
+                    </div>
+
+                    <div class="role-buttons">
+                        ${Object.keys(roles).map(roleKey => `
+                            <button class="btn-role" onclick="changeView('role-${roleKey}')">
+                                ${roles[roleKey].name}
+                                <br><small>${roles[roleKey].subtitle}</small>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div class="links-section">
+                        <button class="btn-secondary" onclick="changeView('home')">← Zurück zur Startseite</button>
+                        <button class="btn-primary btn-large" onclick="changeView('spielbrett')">Zum Spielbrett →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoleCard(roleName) {
+            const role = roles[roleName];
+            return `
+                <div class="container">
+                    <div class="role-card">
+                        <div class="role-header ${role.color}">
+                            <h2>${role.name}</h2>
+                            <p class="role-subtitle">${role.subtitle}</p>
+                        </div>
+                        <div class="role-body">
+                            <div class="role-info">
+                                <p><strong>Alter:</strong> ${role.info.alter}</p>
+                                <p><strong>Beruf:</strong> ${role.info.beruf}</p>
+                                <p><strong>Familie:</strong> ${role.info.familie}</p>
+                            </div>
+
+                            <div class="role-section">
+                                <h3>Ihre Rolle</h3>
+                                <p>${role.description}</p>
+                                <div class="quote">${role.quote}</div>
+                            </div>
+
+                            <div class="role-section secret">
+                                <h3>🎯 Ihre geheimen Ziele</h3>
+                                <ul>
+                                    ${role.ziele.map(z => `<li>${z}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="role-section">
+                                <h3>💭 Denken Sie daran:</h3>
+                                <ul>
+                                    <li>Bleiben Sie in Ihrer Rolle</li>
+                                    <li>Vertreten Sie Ihre Interessen, aber hören Sie auch zu</li>
+                                    <li>Kompromisse sind möglich, aber nicht immer nötig</li>
+                                    <li>Ihre Geheimziele müssen Sie nicht verraten</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="links-section">
+                        <button class="btn-secondary" onclick="changeView('roles')">← Zu allen Rollen</button>
+                        <button class="btn-primary" onclick="changeView('spielbrett')">Zum Spielbrett →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSpielbrett() {
+            return `
+                <div class="container-wide spielbrett-body">
+                    <div class="spielbrett-header">
+                        <h1>Spielbrett</h1>
+                        <div class="current-phase">Phase ${currentPhase}: ${phases[currentPhase-1].name}</div>
+                    </div>
+
+                    <div class="main-grid">
+                        <!-- Left Column: Timer & Phases -->
+                        <div>
+                            <div class="timer-card">
+                                <h3>⏱️ Timer</h3>
+                                <div class="timer-display" id="timerDisplay">${formatTime(timerSeconds)}</div>
+                                <div class="timer-controls">
+                                    <button class="btn-timer" onclick="toggleTimer()">${timerRunning ? 'Pause' : 'Start'}</button>
+                                    <button class="btn-timer" onclick="resetTimer()">Reset</button>
+                                    <button class="btn-timer-small" onclick="addTime(-60)">-1 Min</button>
+                                    <button class="btn-timer-small" onclick="addTime(60)">+1 Min</button>
+                                    <button class="btn-timer-small" onclick="addTime(300)">+5 Min</button>
+                                </div>
+                            </div>
+
+                            <div class="phase-card">
+                                <h3>📋 Phasen</h3>
+                                <div class="phase-nav">
+                                    ${phases.map(p => `
+                                        <button class="phase-btn ${currentPhase === p.id ? 'active' : ''}" 
+                                                onclick="selectPhase(${p.id})">
+                                            Phase ${p.id}: ${p.name}
+                                            <small>${p.duration} Minuten</small>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Middle Column: Content -->
+                        <div class="phase-content">
+                            <h2>${phases[currentPhase-1].name}</h2>
+                            <div class="phase-intro">
+                                <strong>Beschreibung:</strong> ${phases[currentPhase-1].description}
+                                <br><strong>Dauer:</strong> ${phases[currentPhase-1].duration} Minuten
+                            </div>
+
+                            ${currentPhase === 3 ? `
+                                <div class="question-card">
+                                    <div class="question-title">Diskussionsfrage</div>
+                                    <p>Soll die Gemeinde das neue Bauprojekt am Waldrand genehmigen?</p>
+                                    <ul>
+                                        <li>Pro: Schafft 50 Arbeitsplätze, bringt Steuereinnahmen</li>
+                                        <li>Contra: Zerstört Naturschutzgebiet, erhöht Verkehr</li>
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            ${currentPhase === 4 ? `
+                                <div class="voting-section">
+                                    <h3>🗳️ Abstimmung</h3>
+                                    <p>Stimmen Sie ab: Bauprojekt genehmigen?</p>
+                                    <div class="voting-buttons">
+                                        <button class="vote-btn">✓ Ja</button>
+                                        <button class="vote-btn">✗ Nein</button>
+                                        <button class="vote-btn">⊘ Enthaltung</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            <div class="brief-editor">
+                                <div class="brief-header">
+                                    Notizen zur aktuellen Phase
+                                </div>
+                                <textarea placeholder="Notizen, Entscheidungen, wichtige Punkte..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Score & Notes -->
+                        <div>
+                            <div class="score-card">
+                                <h3>🏆 Punktestand</h3>
+                                <div class="score-board">
+                                    ${Object.keys(roles).map(roleKey => `
+                                        <div class="score-row">
+                                            <span>${roles[roleKey].name}</span>
+                                            <div class="score-controls">
+                                                <button onclick="changeScore('${roleKey}', -1)">-</button>
+                                                <span class="score-value" id="score-${roleKey}">${scores[roleKey]}</span>
+                                                <button onclick="changeScore('${roleKey}', 1)">+</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="notes-card">
+                                <h3>📝 Notizen</h3>
+                                <textarea placeholder="Allgemeine Spielnotizen..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="links-section">
+                        <button class="btn-secondary" onclick="changeView('home')">← Zurück zur Startseite</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function changeView(view) {
+            currentView = view;
+            render();
+        }
+
+        function selectPhase(phaseId) {
+            currentPhase = phaseId;
+            timerSeconds = phases[phaseId - 1].duration * 60;
+            timerRunning = false;
+            if (timerInterval) clearInterval(timerInterval);
+            render();
+        }
+
+        function toggleTimer() {
+            timerRunning = !timerRunning;
+            if (timerRunning) {
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+                    } else {
+                        timerRunning = false;
+                        clearInterval(timerInterval);
+                        alert('Zeit abgelaufen!');
+                        render();
+                    }
+                }, 1000);
+            } else {
+                clearInterval(timerInterval);
+            }
+            render();
+        }
+
+        function resetTimer() {
+            timerRunning = false;
+            if (timerInterval) clearInterval(timerInterval);
+            timerSeconds = phases[currentPhase - 1].duration * 60;
+            render();
+        }
+
+        function addTime(seconds) {
+            timerSeconds = Math.max(0, timerSeconds + seconds);
+            document.getElementById('timerDisplay').textContent = formatTime(timerSeconds);
+        }
+
+        function changeScore(role, delta) {
+            scores[role] = Math.max(0, scores[role] + delta);
+            document.getElementById(`score-${role}`).textContent = scores[role];
+        }
+
+        function attachEventListeners() {
+            // Event listeners are attached via onclick in the HTML
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spielanleitung - Talwasser</title>
+    <style>
+        :root {
+            --primary-color: #2c5f4d;
+            --secondary-color: #4a8c72;
+            --accent-color: #d4a574;
+            --bg-light: #f5f1eb;
+            --bg-white: #ffffff;
+            --text-dark: #2c3e50;
+            --border-color: #d4c4b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #e8dfd0 0%, #f5f1eb 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .anleitung-section {
+            padding: 30px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .anleitung-section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .example-box {
+            background: #fff8e7;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box {
+            background: #e7f4f1;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background: var(--bg-light);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        tr:nth-child(even) {
+            background: #fafaf8;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        strong {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .anleitung-section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📖 Vollständige Spielanleitung</h1>
+            <p class="subtitle">Erinnerungen an Talwasser</p>
+        </header>
+
+        <div class="anleitung-section">
+            <h2>Spielidee</h2>
+            <p>In diesem kooperativen Erzähl- und Diskussionsspiel schlüpfen 3-5 Personen in die Rollen 
+            der Familien Dobler und Schnyder. Gemeinsam diskutieren sie über die Zeit des Staudammbaus 
+            im Wägital und verarbeiten ihre unterschiedlichen Perspektiven.</p>
+            
+            <p><strong>Ziel:</strong> Durch authentische Diskussion die verschiedenen Standpunkte verstehen 
+            und gemeinsam einen versöhnlichen Brief an die Zukunft verfassen.</p>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Material & Technik</h2>
+            <ul>
+                <li>Video-Call Software (Zoom, Teams, Discord, etc.)</li>
+                <li>Für jede Person ein eigenes Gerät (Smartphone/Tablet/Laptop)</li>
+                <li>Zugang zu den Rollenkarten (per Link geteilt)</li>
+                <li>Gemeinsames Spielbrett (wird geteilt)</li>
+            </ul>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Setup (10 Minuten)</h2>
+            <ol>
+                <li><strong>Video-Call starten:</strong> Eine Person hostet den Call</li>
+                <li><strong>Rollen verteilen:</strong> Entweder zufällig oder nach Wunsch</li>
+                <li><strong>Rollenkarten lesen:</strong> Jede Person liest NUR ihre eigene Karte</li>
+                <li><strong>Spielbrett öffnen:</strong> Alle öffnen das Spielbrett in ihrem Browser</li>
+            </ol>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Phase 1: Ankunft (10 Min)</h2>
+            <div class="example-box">
+                <strong>Szenario:</strong> Hochzeit 1927, Gasthaus zum Stausee<br>
+                <strong>Aufgabe:</strong> Jede Person beschreibt (1-2 Min):
+                <ul>
+                    <li>Wie fühlt sich die Figur bei der Ankunft?</li>
+                    <li>Was sieht sie beim Blick aufs Wasser?</li>
+                </ul>
+            </div>
+            <div class="tip-box">
+                💡 Bleibt in der Rolle! Nutzt "ich", nicht "meine Figur".
+            </div>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Phase 2: Drei Streitfragen (30-45 Min)</h2>
+            <p>Diskutiert nacheinander drei Fragen:</p>
+            
+            <h3>Frage 1: War der Staudamm gerechtfertigt?</h3>
+            <ul>
+                <li>Jede Person: 2 Min Stellungnahme</li>
+                <li>Offene Diskussion: 10 Min</li>
+                <li>Abstimmung: Wer war am überzeugendsten? (1 Punkt)</li>
+            </ul>
+            
+            <h3>Frage 2: Hätte man mehr Widerstand leisten sollen?</h3>
+            <ul>
+                <li>Jede Person: 2 Min Stellungnahme</li>
+                <li>Offene Diskussion: 10 Min</li>
+                <li>Abstimmung: Wer war am überzeugendsten? (1 Punkt)</li>
+            </ul>
+            
+            <h3>Frage 3: Was bedeutet "Heimat"?</h3>
+            <ul>
+                <li>Jede Person: 2 Min Stellungnahme</li>
+                <li>Offene Diskussion: 10 Min</li>
+                <li>Abstimmung: Wer war am überzeugendsten? (1 Punkt)</li>
+            </ul>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Phase 3: Geheime Erinnerungen (15-20 Min)</h2>
+            <p>Jetzt werden die <strong>geheimen Erinnerungen</strong> offenbart:</p>
+            <ol>
+                <li>Reihum teilt jede Person ihre geheime Erinnerung</li>
+                <li>Die anderen reagieren - im Charakter!</li>
+                <li>Am Ende: Abstimmung für bewegendste Erinnerung (2 Punkte)</li>
+            </ol>
+            <div class="tip-box">
+                💡 Dies ist der emotionale Höhepunkt - nehmt euch Zeit für Reaktionen!
+            </div>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Phase 4: Brief an die Zukunft (10-15 Min)</h2>
+            <p>Verfasst <strong>gemeinsam</strong> einen Brief an das Jahr 2025:</p>
+            <ul>
+                <li>Was habt ihr verloren?</li>
+                <li>Was habt ihr gewonnen?</li>
+                <li>Was soll die Nachwelt verstehen?</li>
+            </ul>
+            <p><strong>Bonus:</strong> Wenn alle zufrieden sind: +1 Punkt für alle</p>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Punktewertung & Gewinner</h2>
+            <table>
+                <tr>
+                    <th>Quelle</th>
+                    <th>Punkte</th>
+                </tr>
+                <tr>
+                    <td>Gewonnene Streitfrage</td>
+                    <td>1 Punkt (max. 3x)</td>
+                </tr>
+                <tr>
+                    <td>Bewegendste Erinnerung</td>
+                    <td>2 Punkte (1x)</td>
+                </tr>
+                <tr>
+                    <td>Brief fertiggestellt</td>
+                    <td>1 Bonuspunkt (alle)</td>
+                </tr>
+            </table>
+            
+            <h3>Ergebnis:</h3>
+            <ul>
+                <li><strong>Höchste Punktzahl:</strong> "Stimme der Familie"</li>
+                <li><strong>Alle ≥3 Punkte + Brief fertig:</strong> "Versöhnte Familie" (Gruppensieg)</li>
+            </ul>
+        </div>
+
+        <div class="anleitung-section">
+            <h2>Tipps für Spielleitung</h2>
+            <ul>
+                <li>Achtet auf die Zeit - nutzt den Timer im Spielbrett</li>
+                <li>Greift ein, wenn jemand aus der Rolle fällt</li>
+                <li>Ermutigt schüchterne Spieler*innen</li>
+                <li>Bei Blockade: Stellt Zwischenfragen</li>
+                <li>Der Brief muss nicht perfekt sein - Authentizität zählt!</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 30px;">
+            <a href="#" class="btn-primary" onclick="window.history.back(); return false;">← Zurück zur Hauptseite</a>
+        </div>
+    </div>
+</body>
+</html>
