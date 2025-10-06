@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rollenkarten - Talwasser</title>
+    <style>
+        :root {
+            --water-dark: #1e3a5f;
+            --water-medium: #2c5282;
+            --water-light: #4299e1;
+            --mountain-gray: #4a5568;
+            --bg-light: #f7fafc;
+            --text-dark: #2d3748;
+            --xaver: #2c5282;
+            --agnes: #c53030;
+            --rosa: #d69e2e;
+            --dolf: #38a169;
+            --franz: #805ad5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .water-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(79, 209, 197, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--xaver), var(--agnes), var(--rosa), var(--dolf), var(--franz));
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--water-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--mountain-gray);
+            font-weight: 300;
+        }
+
+        .role-selection {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            border-left: 5px solid #c53030;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .warning-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .warning p {
+            margin: 0;
+            color: #742a2a;
+            line-height: 1.5;
+        }
+
+        .warning strong {
+            color: #c53030;
+        }
+
+        .role-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn-role {
+            background: white;
+            border: 3px solid var(--mountain-gray);
+            padding: 30px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-role::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-role:hover::before {
+            left: 100%;
+        }
+
+        .btn-role:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .role-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .role-tag {
+            font-size: 0.95rem;
+            font-weight: 400;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--mountain-gray);
+        }
+
+        .xaver-btn { border-color: var(--xaver); }
+        .xaver-btn:hover { 
+            border-color: var(--xaver);
+            background: linear-gradient(135deg, rgba(44, 82, 130, 0.1), rgba(44, 82, 130, 0.05));
+        }
+        .xaver-btn .role-tag { background: rgba(44, 82, 130, 0.15); color: var(--xaver); }
+
+        .agnes-btn { border-color: var(--agnes); }
+        .agnes-btn:hover { 
+            border-color: var(--agnes);
+            background: linear-gradient(135deg, rgba(197, 48, 48, 0.1), rgba(197, 48, 48, 0.05));
+        }
+        .agnes-btn .role-tag { background: rgba(197, 48, 48, 0.15); color: var(--agnes); }
+
+        .rosa-btn { border-color: var(--rosa); }
+        .rosa-btn:hover { 
+            border-color: var(--rosa);
+            background: linear-gradient(135deg, rgba(214, 158, 46, 0.1), rgba(214, 158, 46, 0.05));
+        }
+        .rosa-btn .role-tag { background: rgba(214, 158, 46, 0.15); color: var(--rosa); }
+
+        .dolf-btn { border-color: var(--dolf); }
+        .dolf-btn:hover { 
+            border-color: var(--dolf);
+            background: linear-gradient(135deg, rgba(56, 161, 105, 0.1), rgba(56, 161, 105, 0.05));
+        }
+        .dolf-btn .role-tag { background: rgba(56, 161, 105, 0.15); color: var(--dolf); }
+
+        .franz-btn { border-color: var(--franz); }
+        .franz-btn:hover { 
+            border-color: var(--franz);
+            background: linear-gradient(135deg, rgba(128, 90, 213, 0.1), rgba(128, 90, 213, 0.05));
+        }
+        .franz-btn .role-tag { background: rgba(128, 90, 213, 0.15); color: var(--franz); }
+
+        .role-display {
+            background: white;
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .role-display.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-close {
+            background: var(--mountain-gray);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-close:hover {
+            background: var(--water-dark);
+            transform: translateX(-5px);
+        }
+
+        .role-header {
+            padding: 40px 40px 30px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .role-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .maiden-name {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .role-header .role-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-header.xaver { background: linear-gradient(135deg, var(--xaver), #1e4e8c); }
+        .role-header.agnes { background: linear-gradient(135deg, var(--agnes), #9b2c2c); }
+        .role-header.rosa { background: linear-gradient(135deg, var(--rosa), #b7791f); }
+        .role-header.dolf { background: linear-gradient(135deg, var(--dolf), #2f855a); }
+        .role-header.franz { background: linear-gradient(135deg, var(--franz), #6b46c1); }
+
+        .role-body {
+            padding: 40px;
+        }
+
+        .role-info {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--water-medium);
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: var(--water-dark);
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+        }
+
+        .role-section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            border-left: 4px solid var(--mountain-gray);
+        }
+
+        .role-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .role-section h3 {
+            color: var(--water-dark);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-section p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .role-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .role-section.secret {
+            background: linear-gradient(135deg, #fef5e7, #fdebd0);
+            border-left-color: #d69e2e;
+            position: relative;
+        }
+
+        .role-section.secret::before {
+            content: '🔒';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+
+        blockquote.quote {
+            background: white;
+            border-left: 4px solid var(--water-light);
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-style: italic;
+            color: var(--water-dark);
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .role-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .role-section li {
+            padding: 12px 15px 12px 40px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            position: relative;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .role-section li:hover {
+            transform: translateX(5px);
+        }
+
+        .role-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 15px;
+            color: var(--water-light);
+            font-weight: bold;
+        }
+
+        .role-section li:last-child {
+            margin-bottom: 0;
+        }
+
+        .role-cards-hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header { padding: 30px 20px; }
+            header h1 { font-size: 2.2rem; }
+            .subtitle { font-size: 1rem; }
+            .role-selection { padding: 25px; }
+            .role-buttons { grid-template-columns: 1fr; }
+            .role-body { padding: 25px; }
+            .role-header { padding: 30px 25px 25px; }
+            .role-header h2 { font-size: 2rem; }
+            .info-item { flex-direction: column; gap: 5px; }
+            .info-label { min-width: auto; }
+            .btn-close { margin: 15px; }
+        }
+
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.8rem; }
+            .header-icon { font-size: 2rem; }
+            .role-header h2 { font-size: 1.6rem; }
+            .role-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="water-overlay"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-icon">🏔️💧</div>
+            <h1>Talwasser</h1>
+            <p class="subtitle">Ein Rollenspiel über Heimat, Fortschritt und Erinnerung</p>
+        </header>
+
+        <div class="role-selection">
+            <div class="warning">
+                <span class="warning-icon">⚠️</span>
+                <p><strong>Wichtig:</strong> Lies nur DEINE Rollenkarte! Die geheimen Erinnerungen sind wichtig für das Spiel.</p>
+            </div>
+            
+            <div class="role-buttons">
+                <button onclick="showRole('xaver')" class="btn-role xaver-btn">
+                    <span class="role-name">Xaver Dobler</span>
+                    <span class="role-tag">Der Pragmatiker</span>
+                </button>
+                <button onclick="showRole('agnes')" class="btn-role agnes-btn">
+                    <span class="role-name">Agnes Dobler</span>
+                    <span class="role-tag">Die Rebellin</span>
+                </button>
+                <button onclick="showRole('rosa')" class="btn-role rosa-btn">
+                    <span class="role-name">Rosa Dobler</span>
+                    <span class="role-tag">Die Heimatverbundene</span>
+                </button>
+                <button onclick="showRole('dolf')" class="btn-role dolf-btn">
+                    <span class="role-name">Dölf Dobler</span>
+                    <span class="role-tag">Der Analytiker</span>
+                </button>
+                <button onclick="showRole('franz')" class="btn-role franz-btn">
+                    <span class="role-name">Franz Schnyder</span>
+                    <span class="role-tag">Der Fortschrittsgläubige</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="roleDisplay" class="role-display hidden">
+            <button onclick="closeRole()" class="btn-close">← Zurück zur Auswahl</button>
+            <div id="roleContent"></div>
+        </div>
+
+        <div class="role-cards-hidden">
+            <div id="role-xaver" class="role-card">
+                <div class="role-header xaver">
+                    <h2>Xaver Dobler</h2>
+                    <p class="role-subtitle">Der Pragmatiker</p>
+                </div>
+                <div class="role-body">
+                    <div class="role-info">
+                        <div class="info-item">
+                            <span class="info-label">Jahrgang:</span>
+                            <span class="info-value">1894</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beruf:</span>
+                            <span class="info-value">Bauer auf dem neuen Doblerhof in Tuggen</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Familie:</span>
+                            <span class="info-value">Verheiratet mit Rosa, mehrere Kinder</span>
+                        </div>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎯 Deine Grundhaltung</h3>
+                        <blockquote class="quote">"Wir mussten das Beste daraus machen. Zurückschauen hilft niemandem."</blockquote>
+                        <p>Du bist jemand, der nach vorne blickt. Der Staudamm kam, ob man wollte oder nicht. Jetzt gilt es, den neuen Hof erfolgreich zu führen. Nostalgie ist Luxus.</p>
+                    </div>
+                    <div class="role-section secret">
+                        <h3>🔒 Deine geheime Erinnerung</h3>
+                        <p>Du träumst manchmal noch davon, wie du auf der Zindlen den Alpsegen gerufen hast. Das Echo durchs ganze Tal... Das fehlt dir. Auf dem neuen Hof gibt es kein Echo mehr.</p>
+                    </div>
+                    <div class="role-section">
+                        <h3>💬 Deine Argumente</h3>
+                        <ul>
+                            <li>Der neue Hof ist produktiver und moderner</li>
+                            <li>Die Familie hat überlebt und sogar prosperiert</li>
+                            <li>Elektrizität bringt Fortschritt für alle</li>
+                            <li>Man kann den Lauf der Zeit nicht aufhalten</li>
+                            <li>Der Dädi hat zu viel in der Vergangenheit gelebt</li>
+                        </ul>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎭 Wie du spielst</h3>
+                        <p>Sei sachlich und zukunftsorientiert. Wenn andere emotional werden, bleibst du ruhig. Aber in Phase 3 (geheime Erinnerung) darfst du zeigen, dass auch du etwas vermisst.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="role-agnes" class="role-card">
+                <div class="role-header agnes">
+                    <h2>Agnes Dobler</h2>
+                    <p class="role-subtitle">Die Rebellin</p>
+                </div>
+                <div class="role-body">
+                    <div class="role-info">
+                        <div class="info-item">
+                            <span class="info-label">Jahrgang:</span>
+                            <span class="info-value">1905</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beruf:</span>
+                            <span class="info-value">Mitarbeit auf dem Hof, später verheiratet mit dem Polen Zbigniew</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Familie:</span>
+                            <span class="info-value">Ein Sohn (Seppli, unehelich geboren)</span>
+                        </div>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎯 Deine Grundhaltung</h3>
+                        <blockquote class="quote">"Die Behörden haben uns verkauft. Niemand hat uns gefragt."</blockquote>
+                        <p>Du warst schon immer skeptisch gegenüber Autoritäten. Der Staudamm ist für dich das perfekte Beispiel dafür, wie die "Oberen" über die "Unteren" bestimmen.</p>
+                    </div>
+                    <div class="role-section secret">
+                        <h3>🔒 Deine geheime Erinnerung</h3>
+                        <p>Du vermisst das Frösche- und Forellenfangen mit deinem kleinen Bruder Seppli in der Aa. Diese unbeschwerten Momente am Wasser... Das Muusloch war arm, aber du warst frei.</p>
+                    </div>
+                    <div class="role-section">
+                        <h3>💬 Deine Argumente</h3>
+                        <ul>
+                            <li>Die Bevölkerung wurde nie gefragt</li>
+                            <li>Der "Fortschritt" nutzte den Städtern, nicht euch</li>
+                            <li>Man hätte unbewohnte Täler fluten sollen</li>
+                            <li>Die Entschädigungen waren lächerlich</li>
+                            <li>Tradition und Heimat sind mehr wert als Elektrizität</li>
+                        </ul>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎭 Wie du spielst</h3>
+                        <p>Sei kritisch und emotional. Du darfst die anderen provozieren. Früher hast du den "Gufäschnuuz"-Lehrer nicht respektiert - heute respektierst du die Behörden nicht.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="role-rosa" class="role-card">
+                <div class="role-header rosa">
+                    <h2>Rosa Dobler <span class="maiden-name">(geb. Schnyder)</span></h2>
+                    <p class="role-subtitle">Die Heimatverbundene</p>
+                </div>
+                <div class="role-body">
+                    <div class="role-info">
+                        <div class="info-item">
+                            <span class="info-label">Jahrgang:</span>
+                            <span class="info-value">1897</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beruf:</span>
+                            <span class="info-value">Bäuerin auf dem neuen Doblerhof</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Familie:</span>
+                            <span class="info-value">Verheiratet mit Xaver, mehrere Kinder</span>
+                        </div>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎯 Deine Grundhaltung</h3>
+                        <blockquote class="quote">"Wir haben unsere Geborgenheit verloren. Im Tal war ich zu Hause."</blockquote>
+                        <p>Du hast dich im alten Innerthal geborgen gefühlt wie in einem Vogelnest. Der neue Hof ist praktisch, aber er ist nicht Heimat. Und die Angst vor der Staumauer lässt dich nie los.</p>
+                    </div>
+                    <div class="role-section secret">
+                        <h3>🔒 Deine geheime Erinnerung</h3>
+                        <p>Du kannst nachts oft nicht schlafen. Das Merkblatt mit den Besammlungsorten bei Wasseralarm hängt in deiner Küche. Du träumst manchmal, dass die Flutwelle kommt und du die Kinder nicht retten kannst.</p>
+                    </div>
+                    <div class="role-section">
+                        <h3>💬 Deine Argumente</h3>
+                        <ul>
+                            <li>Heimat kann man nicht durch Geld ersetzen</li>
+                            <li>Die Kinder wachsen ohne Wurzeln auf</li>
+                            <li>Der See ist eine ständige Bedrohung</li>
+                            <li>Die Berge haben euch früher beschützt</li>
+                            <li>Man hat euch das Herz herausgerissen</li>
+                        </ul>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎭 Wie du spielst</h3>
+                        <p>Sei emotional und verletzlich. Du darfst weinen, wenn du von deinen Ängsten sprichst. Aber unterstütze auch deinen Mann Xaver, auch wenn ihr unterschiedlich denkt.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="role-dolf" class="role-card">
+                <div class="role-header dolf">
+                    <h2>Dölf Dobler</h2>
+                    <p class="role-subtitle">Der Analytiker</p>
+                </div>
+                <div class="role-body">
+                    <div class="role-info">
+                        <div class="info-item">
+                            <span class="info-label">Jahrgang:</span>
+                            <span class="info-value">1900</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beruf:</span>
+                            <span class="info-value">Buchhaltung auf dem Hof, Kinderbetreuung</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Besonderheit:</span>
+                            <span class="info-value">Holzbein nach Baustellenunfall</span>
+                        </div>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎯 Deine Grundhaltung</h3>
+                        <blockquote class="quote">"Das Wasser hat zwei Seiten - es gibt Leben und nimmt es."</blockquote>
+                        <p>Du versuchst, beide Seiten zu sehen. Der Staudamm hat euch vertrieben, aber auch Wohlstand gebracht. Du bist der Vermittler in der Familie.</p>
+                    </div>
+                    <div class="role-section secret">
+                        <h3>🔒 Deine geheime Erinnerung</h3>
+                        <p>Dein Holzbein erinnert dich jeden Tag daran, was der "Fortschritt" kostet. Du hast es beim Bau der Staumauer verloren - für ein Werk, das eure Heimat zerstörte. Diese Ironie vergisst du nie.</p>
+                    </div>
+                    <div class="role-section">
+                        <h3>💬 Deine Argumente</h3>
+                        <ul>
+                            <li>Jede Medaille hat zwei Seiten</li>
+                            <li>Die Elektrizität hilft tatsächlich vielen Menschen</li>
+                            <li>Aber: Der Preis war hoch und ungerecht verteilt</li>
+                            <li>Man hätte die Betroffenen besser einbeziehen sollen</li>
+                            <li>Fortschritt braucht Menschlichkeit</li>
+                        </ul>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎭 Wie du spielst</h3>
+                        <p>Sei der Philosoph und Vermittler. Wenn die Diskussion zu hitzig wird, bringst du beide Seiten zusammen. Aber zeige auch deine persönliche Wunde (das Holzbein).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="role-franz" class="role-card">
+                <div class="role-header franz">
+                    <h2>Franz Schnyder</h2>
+                    <p class="role-subtitle">Der Fortschrittsgläubige</p>
+                </div>
+                <div class="role-body">
+                    <div class="role-info">
+                        <div class="info-item">
+                            <span class="info-label">Jahrgang:</span>
+                            <span class="info-value">1868</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Beruf:</span>
+                            <span class="info-value">Bauer, Fuhrhalter mit drei Pferden</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Familie:</span>
+                            <span class="info-value">Vater von Rosa und weiteren Kindern</span>
+                        </div>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎯 Deine Grundhaltung</h3>
+                        <blockquote class="quote">"Der Fortschritt war notwendig. Wir lebten in Armut."</blockquote>
+                        <p>Du warst schon immer für die Modernisierung. Das alte Innerthal war arm und rückständig. Der See brachte Entwicklung - und die war überfällig.</p>
+                    </div>
+                    <div class="role-section secret">
+                        <h3>🔒 Deine geheime Erinnerung</h3>
+                        <p>Manchmal, wenn du deine Tochter Rosa ansiehst und ihre Angst vor dem See spürst, zweifelst du. Vielleicht hattest du doch nicht vollständig recht. Aber das würdest du nie zugeben.</p>
+                    </div>
+                    <div class="role-section">
+                        <h3>💬 Deine Argumente</h3>
+                        <ul>
+                            <li>Das Tal war bettelarm - die Armut hättest du nicht gewollt</li>
+                            <li>Viele Junge mussten auswandern, weil das Land sie nicht ernährte</li>
+                            <li>Der Strom bringt Wohlstand und Arbeitsplätze</li>
+                            <li>Die Bauern haben faire Entschädigungen erhalten</li>
+                            <li>Man kann den Fortschritt nicht aufhalten</li>
+                        </ul>
+                    </div>
+                    <div class="role-section">
+                        <h3>🎭 Wie du spielst</h3>
+                        <p>Verteidige den Fortschritt - aber nicht arrogant. Du bist alt und weise, hast aber auch Zweifel (die du erst in Phase 3 zeigst). Respektiere die Schmerzen der anderen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showRole(roleId) {
+            const display = document.getElementById('roleDisplay');
+            const content = document.getElementById('roleContent');
+            const roleCard = document.getElementById('role-' + roleId);
+            
+            if (roleCard) {
+                content.innerHTML = roleCard.innerHTML;
+                display.classList.remove('hidden');
+                setTimeout(() => {
+                    display.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        function closeRole() {
+            const display = document.getElementById('roleDisplay');
+            display.classList.add('hidden');
+            document.querySelector('.role-selection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
