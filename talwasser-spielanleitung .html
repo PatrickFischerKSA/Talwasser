@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talwasser - Spielanleitung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #D4AF77;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .section-icon {
+            font-size: 2.5em;
+        }
+        
+        .section-header h2 {
+            font-size: 1.8em;
+        }
+        
+        .info-box {
+            background: #E8F4FD;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .info-box.warning {
+            background: #FFF3CD;
+            border-left-color: #FFA500;
+        }
+        
+        .info-box.success {
+            background: #D4EDDA;
+            border-left-color: #28A745;
+        }
+        
+        .info-box h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin: 25px 0 15px 0;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        
+        p {
+            line-height: 1.8;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+            line-height: 2;
+            font-size: 1.1em;
+        }
+        
+        li {
+            margin: 10px 0;
+        }
+        
+        strong {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .character-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .character-card h4 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .character-card p {
+            font-size: 1em;
+            margin: 8px 0;
+        }
+        
+        .phase-timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+        
+        .phase-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .phase-step {
+            position: relative;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .phase-step::before {
+            content: attr(data-phase);
+            position: absolute;
+            left: -38px;
+            top: 20px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 4px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .phase-step h4 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .materials-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .materials-list ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .materials-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .materials-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .materials-list li::before {
+            content: '✓';
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .suno-highlight {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .suno-highlight h3 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+        
+        .suno-highlight a {
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .tips-box {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .tips-box h3 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏔️ Talwasser 💧</h1>
+            <p>Ein Rollenspiel über Heimat, Fortschritt und Erinnerung</p>
+        </div>
+
+        <div class="content">
+            <!-- Übersicht -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">📖</div>
+                    <h2>Spielübersicht</h2>
+                </div>
+                
+                <div class="info-box">
+                    <h3>📋 Eckdaten</h3>
+                    <p><strong>Spieler:</strong> 3-5 Personen<br>
+                    <strong>Dauer:</strong> 60-90 Minuten<br>
+                    <strong>Alter:</strong> Ab 14 Jahren<br>
+                    <strong>Schwierigkeit:</strong> Leicht bis mittel</p>
+                </div>
+                
+                <p>Im Jahr 1924 wurde das Innertal (Wägital) für den Bau des Wägitalersees geflutet. Ganze Familien mussten ihre Heimat verlassen. In diesem Rollenspiel schlüpft ihr in die Rollen von Mitgliedern der Familien Dobler und Schnyder und erlebt ihre Geschichte bei einer Familienfeier im Jahr 1927.</p>
+                
+                <p>Durch Diskussionen, das Teilen geheimer Erinnerungen und das gemeinsame Erschaffen eines Liedes verarbeitet ihr die Ereignisse und versteht die verschiedenen Perspektiven auf dieses historische Ereignis.</p>
+            </div>
+
+            <!-- Spielmaterial -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🎲</div>
+                    <h2>Was ihr braucht</h2>
+                </div>
+                
+                <div class="materials-list">
+                    <ul>
+                        <li><strong>Talwasser Complete Website</strong> - Mit Rollenkarten und Spielbrett</li>
+                        <li><strong>1-2 Geräte</strong> - Laptop, Tablet oder Smartphone für Rollenkarten</li>
+                        <li><strong>1 großer Bildschirm</strong> - Für das Spielbrett (optional: Beamer)</li>
+                        <li><strong>Internetzugang</strong> - Für Suno.com in Phase 4</li>
+                        <li><strong>Papier & Stifte</strong> - Für Notizen (optional)</li>
+                        <li><strong>Gemütliche Sitzgelegenheit</strong> - Idealerweise im Kreis oder um einen Tisch</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Vorbereitung -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🎬</div>
+                    <h2>Vorbereitung</h2>
+                </div>
+                
+                <h3>Schritt 1: Technik aufbauen</h3>
+                <ol>
+                    <li>Öffnet die <strong>Talwasser Complete</strong> Website auf zwei Geräten</li>
+                    <li><strong>Gerät 1 (für alle):</strong> Navigiert zum <strong>Spielbrett</strong> und zeigt es auf einem großen Bildschirm</li>
+                    <li><strong>Gerät 2 (Rollenkarten):</strong> Navigiert zu den <strong>Rollenkarten</strong></li>
+                </ol>
+                
+                <h3>Schritt 2: Rollen verteilen</h3>
+                <div class="info-box warning">
+                    <h3>⚠️ Wichtige Regel!</h3>
+                    <p>Jede Person darf nur IHRE eigene Rollenkarte lesen! Die Informationen der anderen bleiben geheim bis Phase 3.</p>
+                </div>
+                
+                <p>Es gibt 5 verschiedene Rollen. Jede Person wählt oder zieht eine Rolle:</p>
+                
+                <div class="character-grid">
+                    <div class="character-card">
+                        <h4>🧑‍🌾 Xaver</h4>
+                        <p><strong>Der Pragmatiker</strong></p>
+                        <p>Blickt nach vorne, hat sich mit der Situation abgefunden</p>
+                    </div>
+                    
+                    <div class="character-card">
+                        <h4>👩‍🦰 Agnes</h4>
+                        <p><strong>Die Rebellin</strong></p>
+                        <p>Kritisch gegenüber Autorität, hadert mit dem Geschehenen</p>
+                    </div>
+                    
+                    <div class="character-card">
+                        <h4>👵 Rosa</h4>
+                        <p><strong>Die Heimatverbundene</strong></p>
+                        <p>Sehnt sich nach der alten Zeit, fühlt sich entwurzelt</p>
+                    </div>
+                    
+                    <div class="character-card">
+                        <h4>👨‍🦳 Dölf</h4>
+                        <p><strong>Der Analytiker</strong></p>
+                        <p>Sieht beide Seiten, versucht zu versöhnen</p>
+                    </div>
+                    
+                    <div class="character-card">
+                        <h4>👴 Franz</h4>
+                        <p><strong>Der Fortschrittsgläubige</strong></p>
+                        <p>Verteidigt die Modernisierung, zweifelt heimlich</p>
+                    </div>
+                </div>
+                
+                <h3>Schritt 3: Rollenkarte lesen</h3>
+                <ol>
+                    <li>Klicke auf deine Rollenkarte - sie dreht sich um</li>
+                    <li>Lies alle Informationen sorgfältig:
+                        <ul>
+                            <li><strong>Charakter:</strong> Wer bist du?</li>
+                            <li><strong>Haltung:</strong> Deine grundsätzliche Meinung</li>
+                            <li><strong>Geheime Erinnerung:</strong> Nur für dich (bis Phase 3!)</li>
+                            <li><strong>Diskussionspunkt:</strong> Dein Hauptargument</li>
+                        </ul>
+                    </li>
+                    <li>Klicke nochmal auf die Karte, um sie wieder zu schließen</li>
+                    <li>Nimm dir 2-3 Minuten, um dich in die Rolle hineinzudenken</li>
+                </ol>
+            </div>
+
+            <!-- Spielablauf -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🎮</div>
+                    <h2>Spielablauf - Die 4 Phasen</h2>
+                </div>
+                
+                <p>Das Spiel ist in 4 Phasen unterteilt. Ein Spieler übernimmt die Rolle des <strong>Spielleiters</strong> und bedient das Spielbrett (Timer, Phasen öffnen, Punkte vergeben).</p>
+                
+                <div class="phase-timeline">
+                    <div class="phase-step" data-phase="1">
+                        <h4>🏞️ Phase 1: Ankunft (10 Minuten)</h4>
+                        <p><strong>Szenario:</strong> Hochzeit von Kari und Anni (1927). Alle treffen beim Gasthaus am Stausee ein.</p>
+                        
+                        <p><strong>Aufgabe:</strong> Jede Person beschreibt in 1-2 Sätzen:</p>
+                        <ul>
+                            <li>Wie fühlt sich ihre Figur bei der Ankunft am See?</li>
+                            <li>Was sieht sie, wenn sie aufs Wasser blickt?</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <p><strong>💡 Tipp:</strong> Sprecht in der Ich-Form und bleibt im Charakter! Beispiel: "Ich, Xaver, fühle mich seltsam ruhig, wenn ich auf das Wasser schaue..."</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-step" data-phase="2">
+                        <h4>💬 Phase 2: Die drei Streitfragen (30-45 Minuten)</h4>
+                        <p>Ihr diskutiert nacheinander drei Fragen. <strong>Bleibt dabei in eurer Rolle!</strong></p>
+                        
+                        <h5>Frage 1: War der Staudamm gerechtfertigt?</h5>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme (Timer starten!)</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> Gruppe stimmt ab - wessen Argument war am überzeugendsten? (1 Punkt)</li>
+                        </ul>
+                        
+                        <h5>Frage 2: Hätte man mehr Widerstand leisten sollen?</h5>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> 1 Punkt für bestes Argument</li>
+                        </ul>
+                        
+                        <h5>Frage 3: Was bedeutet "Heimat" für euch?</h5>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> 1 Punkt für bestes Argument</li>
+                        </ul>
+                        
+                        <div class="info-box success">
+                            <p><strong>✨ Diskussionskultur:</strong> Respektiert die verschiedenen Perspektiven! Es gibt keine "richtige" Antwort - jede Rolle hat ihre Berechtigung.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-step" data-phase="3">
+                        <h4>🤫 Phase 3: Die geheimen Erinnerungen (15-20 Minuten)</h4>
+                        <p>Jetzt dürft ihr eure geheimen Erinnerungen preisgeben!</p>
+                        
+                        <p><strong>Ablauf:</strong></p>
+                        <ol>
+                            <li>Reihum teilt jede Person ihre geheime Erinnerung</li>
+                            <li>Die anderen reagieren darauf - <em>bleibt im Charakter!</em></li>
+                            <li>Nach allen Erinnerungen: Welche hat euch am meisten berührt?</li>
+                        </ol>
+                        
+                        <p><strong>Punktevergabe:</strong> Die berührendste Erinnerung erhält 2 Punkte!</p>
+                        
+                        <div class="info-box">
+                            <p><strong>💡 Tipp:</strong> Dies ist der emotionale Höhepunkt des Spiels. Nehmt euch Zeit und teilt authentisch eure Gefühle.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="phase-step" data-phase="4">
+                        <h4>🎵 Phase 4: Das Talwasser-Lied (15-20 Minuten)</h4>
+                        <p>Erschafft gemeinsam ein Lied über das versunkene Tal!</p>
+                        
+                        <p><strong>Aufgabe:</strong> Schreibt zusammen einen Liedtext (4-8 Zeilen)</p>
+                        
+                        <p><strong>Das Lied soll enthalten:</strong></p>
+                        <ul>
+                            <li>Die Erinnerung an das alte Tal</li>
+                            <li>Die Gefühle der verschiedenen Charaktere</li>
+                            <li>Eine Botschaft über Heimat und Veränderung</li>
+                        </ul>
+                        
+                        <div class="suno-highlight">
+                            <h3>🎼 Mit Suno.com zum echten Song!</h3>
+                            <p>Verwandelt euren Liedtext in echte Musik! Besucht <a href="https://suno.com/home" target="_blank">suno.com</a> und lasst euer Lied lebendig werden.</p>
+                            
+                            <p><strong>So geht's:</strong></p>
+                            <ol>
+                                <li>Schreibt euren Liedtext im Notizfeld auf dem Spielbrett</li>
+                                <li>Öffnet <strong>suno.com</strong></li>
+                                <li>Gebt euren Liedtext ein</li>
+                                <li>Wählt einen Musikstil (z.B. "Swiss folk ballad", "melancholic Ländler", "alpine folk song")</li>
+                                <li>Generiert 2 Versionen</li>
+                                <li>Hört sie gemeinsam an und wählt eure Favoriten!</li>
+                            </ol>
+                        </div>
+                        
+                        <p><strong>Bonus:</strong> Wenn alle mit dem Lied zufrieden sind: +1 Punkt für alle!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Punktesystem -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🏆</div>
+                    <h2>Punktesystem & Gewinner</h2>
+                </div>
+                
+                <h3>Wie sammelt man Punkte?</h3>
+                <ul>
+                    <li><strong>Phase 2:</strong> 3x je 1 Punkt für überzeugende Argumente (max. 3 Punkte)</li>
+                    <li><strong>Phase 3:</strong> 2 Punkte für die berührendste Erinnerung</li>
+                    <li><strong>Phase 4:</strong> +1 Bonuspunkt für alle, wenn das Lied gelungen ist</li>
+                </ul>
+                
+                <h3>Wer gewinnt?</h3>
+                <div class="info-box success">
+                    <h3>✨ Zwei Siegbedingungen:</h3>
+                    <p><strong>Einzelsieg:</strong> Die Person mit den meisten Punkten wird die "Stimme der Familie" 👑</p>
+                    <p><strong>Gruppensieg:</strong> Wenn ALLE mindestens 3 Punkte haben, gewinnt die gesamte Familie - eine "versöhnte Familie"! ✨</p>
+                </div>
+                
+                <p>Klickt am Ende auf <strong>"Endergebnis zeigen"</strong> auf dem Spielbrett, um die Auswertung zu sehen.</p>
+            </div>
+
+            <!-- Spielleiter-Tipps -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🎯</div>
+                    <h2>Tipps für den Spielleiter</h2>
+                </div>
+                
+                <div class="tips-box">
+                    <h3>💡 Deine Aufgaben:</h3>
+                    <ul>
+                        <li><strong>Timer bedienen:</strong> Nutze die Preset-Buttons (2, 10, 15, 30 Min) und starte/stoppe den Timer</li>
+                        <li><strong>Phasen öffnen:</strong> Klicke auf die Phasen-Header, um die Anleitungen anzuzeigen</li>
+                        <li><strong>Punkte vergeben:</strong> Nutze die +/- Buttons bei den Spielerkarten</li>
+                        <li><strong>Diskussion moderieren:</strong> Achte darauf, dass alle zu Wort kommen</li>
+                        <li><strong>Zeit im Blick:</strong> Halte die Zeiten ein, aber sei flexibel wenn's spannend wird</li>
+                        <li><strong>Atmosphäre schaffen:</strong> Ermutige alle, wirklich in ihre Rolle zu schlüpfen</li>
+                    </ul>
+                </div>
+                
+                <h3>Zusätzliche Tipps:</h3>
+                <ul>
+                    <li><strong>Keine Eile:</strong> Wenn eine Diskussion besonders intensiv ist, lasst sie ruhig länger laufen</li>
+                    <li><strong>Neutrale Haltung:</strong> Als Spielleiter bleibst du neutral, auch wenn du eine Rolle spielst</li>
+                    <li><strong>Emotionen zulassen:</strong> Das Spiel kann emotional werden - das ist gewollt und gut!</li>
+                    <li><strong>Notizen machen:</strong> Nutzt das Notizfeld für wichtige Gedanken und natürlich für den Liedtext</li>
+                </ul>
+            </div>
+
+            <!-- Varianten -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🔄</div>
+                    <h2>Spielvarianten</h2>
+                </div>
+                
+                <h3>Für 3 Spieler:</h3>
+                <p>Wählt nur 3 Rollenkarten aus. Empfohlen: Xaver, Agnes und Rosa (verschiedene Perspektiven).</p>
+                
+                <h3>Für 4 Spieler:</h3>
+                <p>Wählt 4 Rollenkarten. Empfohlen: Xaver, Agnes, Rosa und Dölf.</p>
+                
+                <h3>Kürzere Version (45 Min):</h3>
+                <ul>
+                    <li>Phase 1: 5 Minuten</li>
+                    <li>Phase 2: Nur 2 Fragen (je 10 Min)</li>
+                    <li>Phase 3: 10 Minuten</li>
+                    <li>Phase 4: 10 Minuten (ohne Suno.com)</li>
+                </ul>
+                
+                <h3>Erweiterte Version (120 Min):</h3>
+                <ul>
+                    <li>Zusätzliche Streitfrage in Phase 2: "Was hätten wir anders machen sollen?"</li>
+                    <li>Phase 4: Schreibt ein längeres Lied (2 Strophen + Refrain) und produziert es mit Suno.com</li>
+                    <li>Zusätzliche Phase 5: "Der Blick zurück" - Aus heutiger Sicht (2025) auf die Ereignisse schauen</li>
+                </ul>
+            </div>
+
+            <!-- Historischer Kontext -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">📚</div>
+                    <h2>Historischer Hintergrund</h2>
+                </div>
+                
+                <p>Das Spiel basiert auf wahren Ereignissen:</p>
+                
+                <div class="info-box">
+                    <h3>Das Innertal (Wägital) 1924</h3>
+                    <p>Zwischen 1922 und 1924 wurde das Innertal im Kanton Schwyz für den Bau des Wägitalersees geflutet. Die Bewohner mussten ihre Heimat verlassen. Häuser, Höfe und die Kirche verschwanden unter dem Wasser. Der Stausee diente der Stromproduktion und sollte wirtschaftlichen Fortschritt bringen.</p>
+                    
+                    <p>Die Familien Dobler und Schnyder sind fiktive Charaktere, aber ihre Geschichten und Perspektiven basieren auf echten Erfahrungen der Betroffenen. Das Spannungsfeld zwischen Fortschritt und Heimatverlust war damals real und ist auch heute noch relevant.</p>
+                </div>
+                
+                <p>Das Spiel lädt ein, diese verschiedenen Perspektiven zu verstehen und über zeitlose Fragen von Heimat, Fortschritt und Identität nachzudenken.</p>
+            </div>
+
+            <!-- FAQ -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">❓</div>
+                    <h2>Häufige Fragen</h2>
+                </div>
+                
+                <h3>Muss ich schauspielerisches Talent haben?</h3>
+                <p>Nein! Es geht nicht um perfektes Schauspiel, sondern darum, eine Perspektive einzunehmen und aus dieser heraus zu argumentieren.</p>
+                
+                <h3>Was, wenn jemand nicht gerne redet?</h3>
+                <p>Die Struktur hilft: Jeder hat feste Redezeiten und konkrete Aufgaben. Niemand muss improvisieren oder spontan lange Monologe halten.</p>
+                
+                <h3>Brauchen wir wirklich Suno.com?</h3>
+                <p>Nein, das ist optional! Ihr könnt auch einfach nur den Text schreiben und ihn gemeinsam laut vorlesen. Suno.com ist ein zusätzliches Highlight.</p>
+                
+                <h3>Können wir auch online spielen?</h3>
+                <p>Ja! Nutzt Video-Call (Zoom, Teams, Discord) und teilt den Bildschirm mit dem Spielbrett. Die Rollenkarten können per privater Nachricht verteilt werden.</p>
+                
+                <h3>Wie wird entschieden, wer welche Rolle bekommt?</h3>
+                <p>Ihr könnt frei wählen oder losen. Manche möchten vielleicht gezielt eine bestimmte Perspektive erkunden.</p>
+                
+                <h3>Was, wenn niemand Spielleiter sein möchte?</h3>
+                <p>Der Spielleiter kann auch mitspielen! Die Rolle ist nicht aufwendig - einfach Timer bedienen und Punkte vergeben.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>🏔️ Talwasser 💧</strong></p>
+            <p>Ein Spiel über Heimat, Fortschritt und Erinnerung</p>
+            <p>Viel Spaß beim Spielen!</p>
+        </div>
+    </div>
+</body>
+</html>
