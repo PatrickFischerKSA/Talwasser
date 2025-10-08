@@ -1,340 +1,183 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Talwasser - Ein kooperatives Erzählspiel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talwasser – ein kooperatives Erzählspiel</title>
   <style>
     :root {
-      --primary-color: #2c5f4d;
-      --secondary-color: #4a8c72;
-      --accent-color: #d4a574;
-      --bg-light: #f5f1eb;
-      --bg-white: #ffffff;
-      --text-dark: #2c3e50;
-      --border-color: #d4c4b0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      --primary: #2c5f4d;
+      --secondary: #4a8c72;
+      --accent: #d4a574;
+      --bg: #f5f1eb;
+      --text: #2c3e50;
     }
 
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      color: var(--text-dark);
-      background: linear-gradient(135deg, #e8dfd0 0%, #f5f1eb 100%);
-      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    nav {
+      background: var(--secondary);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 1rem 1.5rem;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background: var(--accent);
     }
 
     .hero {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      padding: 80px 20px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      padding: 6rem 2rem;
+      background: url("Innerthal.jpg") center/cover no-repeat;
+      color: white;
+      background-blend-mode: multiply;
+      background-color: rgba(44, 95, 77, 0.6);
     }
 
     .hero h1 {
-      font-size: 3.5em;
-      margin-bottom: 15px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
 
-    .hero .tagline {
-      font-size: 1.5em;
-      font-style: italic;
-      opacity: 0.95;
-      margin-bottom: 10px;
-    }
-
-    .hero .subtitle {
-      font-size: 1.1em;
-      opacity: 0.85;
+    .hero p {
+      font-size: 1.4rem;
       max-width: 700px;
-      margin: 0 auto;
+      margin: 0 auto 2rem;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    .intro-section {
-      background: var(--bg-white);
-      border-radius: 12px;
-      padding: 40px;
-      margin-bottom: 40px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .intro-section h2 {
-      color: var(--primary-color);
-      font-size: 2em;
-      margin-bottom: 20px;
-      border-bottom: 3px solid var(--accent-color);
-      padding-bottom: 10px;
-    }
-
-    .intro-section p {
-      font-size: 1.1em;
-      margin-bottom: 15px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin: 40px 0;
-    }
-
-    .feature-card {
-      background: var(--bg-white);
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .feature-icon {
-      font-size: 3em;
-      margin-bottom: 15px;
-    }
-
-    .feature-card h3 {
-      color: var(--primary-color);
-      font-size: 1.5em;
-      margin-bottom: 12px;
-    }
-
-    .feature-card p {
-      color: var(--text-dark);
-    }
-
-    .action-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      margin: 40px 0;
-    }
-
-    .action-card {
-      background: var(--bg-white);
-      border-radius: 12px;
-      padding: 35px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .action-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-
-    .action-card h3 {
-      color: var(--primary-color);
-      font-size: 1.8em;
-      margin-bottom: 15px;
-    }
-
-    .action-card p {
-      margin-bottom: 20px;
-      font-size: 1.05em;
-    }
-
-    .btn {
+    .start-button {
       display: inline-block;
-      padding: 14px 35px;
-      text-decoration: none;
-      border-radius: 8px;
+      padding: 1rem 2rem;
+      background: var(--accent);
+      color: white;
+      font-size: 1.2rem;
       font-weight: bold;
-      font-size: 1.1em;
-      transition: all 0.3s ease;
-      cursor: pointer;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
     }
 
-    .btn-primary {
-      background: var(--secondary-color);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-color);
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-secondary {
-      background: var(--accent-color);
-      color: white;
-    }
-
-    .btn-secondary:hover {
-      background: #c89660;
+    .start-button:hover {
+      background: #b98754;
       transform: scale(1.05);
     }
 
-    .info-box {
-      background: #fff8e7;
-      border-left: 5px solid var(--accent-color);
-      padding: 25px;
-      margin: 30px 0;
-      border-radius: 4px;
-    }
-
-    .info-box h3 {
-      color: var(--primary-color);
-      margin-bottom: 12px;
-    }
-
-    .info-box ul {
-      margin-left: 20px;
-    }
-
-    .info-box li {
-      margin-bottom: 8px;
+    main {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 2rem;
     }
 
     footer {
-      background: var(--primary-color);
+      background: var(--primary);
       color: white;
       text-align: center;
-      padding: 30px 20px;
-      margin-top: 60px;
+      padding: 1rem;
+      margin-top: 3rem;
     }
 
-    footer p {
-      margin-bottom: 8px;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
       .hero h1 {
-        font-size: 2.5em;
+        font-size: 2.2rem;
       }
-      .hero .tagline {
-        font-size: 1.2em;
-      }
-      .intro-section {
-        padding: 25px;
-      }
-      .action-cards {
-        grid-template-columns: 1fr;
+      .start-button {
+        font-size: 1rem;
+        padding: 0.8rem 1.6rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>🌊 Talwasser</h1>
-    <p class="tagline">Erinnerungen an das versunkene Wägital</p>
-    <p class="subtitle">Ein kooperatives Erzähl- und Diskussionsspiel über Heimat, Verlust und Versöhnung</p>
-  </div>
 
-  <div class="container">
-    <div class="intro-section">
-      <h2>Willkommen</h2>
-      <p>Im Jahr 1924 wurde das Wägital in der Schweiz geflutet, um einen Staudamm zu errichten. 
-      Ganze Dörfer verschwanden unter Wasser, Familien mussten ihre Heimat verlassen. 
-      Heute, fast ein Jahrhundert später, laden wir euch ein, in die Rollen der betroffenen 
-      Familien Dobler und Schnyder zu schlüpfen.</p>
-      
-      <p><strong>Talwasser</strong> ist ein kooperatives Erzählspiel für 3-5 Personen, das remote 
-      über Video-Call gespielt wird. Durch authentische Diskussionen und emotionale Momente 
-      erlebt ihr die verschiedenen Perspektiven auf dieses historische Ereignis.</p>
-    </div>
+  <header>
+    <h1>Talwasser – ein kooperatives Erzählspiel</h1>
+  </header>
 
-    <div class="features">
-      <div class="feature-card">
-        <div class="feature-icon">👥</div>
-        <h3>3-5 Spieler*innen</h3>
-        <p>Perfekt für kleine Gruppen, die tief in Charaktere eintauchen möchten</p>
-      </div>
+  <nav>
+    <a href="talwasser-spielanleitung.html">📖 Spielanleitung</a>
+    <a href="talwasser-spielbrett.html">🗺️ Spielbrett</a>
+    <a href="talwasser-spielleiter.html">🧑‍⚖️ Spielleiter-Handbuch</a>
+    <a href="talwasser_rollenkarten.html">🎭 Rollenkarten</a>
+    <a href="talwasser_complete.html">🧩 Komplettes Spiel</a>
+  </nav>
 
-      <div class="feature-card">
-        <div class="feature-icon">⏱️</div>
-        <h3>75-90 Minuten</h3>
-        <p>Ein intensives, aber gut planbares Spielerlebnis</p>
-      </div>
+  <section class="hero">
+    <h1>Willkommen in Talwasser</h1>
+    <p>Ein Dorf, eine Entscheidung, ein gemeinsames Abenteuer.  
+       In <em>Talwasser</em> gestaltet ihr die Zukunft eines ganzen Tals – mit jeder Entscheidung, die ihr trefft.</p>
+    <a href="talwasser_complete.html" class="start-button">🎮 Spiel starten</a>
+  </section>
 
-      <div class="feature-card">
-        <div class="feature-icon">💻</div>
-        <h3>Remote spielbar</h3>
-        <p>Via Zoom, Teams oder Discord - von überall aus</p>
-      </div>
+  <main>
+    <h2>Prolog: Das Tal, das verschwindet</h2>
+    <p>
+      Tief im Herzen der Berge liegt <em>Talwasser</em>, ein abgelegenes Dorf, das seit Generationen vom Rhythmus der Jahreszeiten lebt. 
+      Hier kennt jeder jeden, die Geschichten der Familien verweben sich mit dem Rauschen des Bachs, der durch die Wiesen fliesst. 
+      Doch die vertraute Ordnung ist in Gefahr: Ein Staudammprojekt soll das Tal überfluten – im Namen des Fortschritts, der Energie, der Zukunft.
+    </p>
+    <p>
+      Für manche bedeutet das den Aufbruch in eine neue Zeit: Arbeitsplätze, wirtschaftlicher Aufschwung, Anschluss an die moderne Welt.  
+      Für andere ist es der Verlust von Heimat, Erinnerungen und Geschichte – ein Opfer, das zu gross ist, um es einfach hinzunehmen.  
+      Alte Konflikte brechen auf, neue Allianzen entstehen, und jede Stimme zählt.
+    </p>
+    <p>
+      In diesem Spiel übernehmt ihr die Rollen jener Menschen, die über das Schicksal von Talwasser entscheiden.  
+      Ihr verhandelt, zweifelt, plant, kämpft – gemeinsam, gegeneinander oder beides zugleich.  
+      Es gibt keine richtigen oder falschen Entscheidungen, nur Konsequenzen, die die Zukunft des Tals formen.
+    </p>
+    <p>
+      <strong>Seid ihr bereit?</strong> Dann tretet ein in die Welt von <em>Talwasser</em> und beginnt eure Geschichte.
+    </p>
 
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h3>Kooperativ</h3>
-        <p>Gemeinsam Perspektiven verstehen und einen Brief an die Zukunft schreiben</p>
-      </div>
-    </div>
+    <hr style="margin: 3rem 0; border: none; border-top: 2px solid #ccc;">
 
-    <div class="action-cards">
-      <div class="action-card">
-        <h3>📖 Spielanleitung</h3>
-        <p>Erfahre, wie das Spiel funktioniert, welche Phasen es gibt und wie ihr gemeinsam zum Ziel kommt.</p>
-        <a href="talwasser-spielanleitung.html" class="btn btn-primary">Zur Anleitung</a>
-      </div>
+    <h2>So funktioniert das Spiel</h2>
+    <p>
+      <strong>1. Rollen wählen 🎭</strong><br>
+      Jede Spielerin und jeder Spieler übernimmt eine eigene Rolle – vom Bürgermeister bis zur Umweltaktivistin, vom Landwirt bis zur Investorin.  
+      Jede Rolle hat eigene Ziele, Hintergrundgeschichten und verborgene Motive.
+    </p>
 
-      <div class="action-card">
-        <h3>🧑‍💼 Rollenkarten Übersicht</h3>
-        <p>Alle Charaktere auf einen Blick – ihre Beziehungen, Hintergründe und Rollen im Spiel.</p>
-        <a href="talwasser_rollenkarten.html" class="btn btn-secondary">Rollenkarten öffnen</a>
-      </div>
+    <p>
+      <strong>2. Entscheidungen treffen ⚖️</strong><br>
+      In mehreren Spielrunden diskutiert, verhandelt und stimmt ihr über zentrale Fragen ab.  
+      Eure Entscheidungen beeinflussen die Handlung, verändern Allianzen und führen zu unerwarteten Wendungen.
+    </p>
 
-      <div class="action-card">
-        <h3>🎭 Rollenspiel-Szenen</h3>
-        <p>Wähle deine Rolle aus den Familien Dobler und Schnyder und entdecke ihre Geschichte.</p>
-        <a href="stausee-rollenspiel.html" class="btn btn-secondary">Szenen ansehen</a>
-      </div>
-
-      <div class="action-card">
-        <h3>🎲 Spielbrett</h3>
-        <p>Das digitale Spielbrett mit Timer, Punktezähler und allen wichtigen Informationen.</p>
-        <a href="talwasser-spielbrett.html" class="btn btn-primary">Zum Spielbrett</a>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <h3>📋 Was ihr braucht:</h3>
-      <ul>
-        <li>Video-Call Software (Zoom, Teams, Discord, etc.)</li>
-        <li>Für jede Person ein eigenes Gerät (Smartphone, Tablet oder Laptop)</li>
-        <li>Ca. 90 Minuten ungestörte Zeit</li>
-        <li>Bereitschaft, in eine Rolle einzutauchen</li>
-        <li>Offenheit für emotionale Momente</li>
-      </ul>
-    </div>
-
-    <div class="intro-section">
-      <h2>Spielablauf im Überblick</h2>
-      <p><strong>Phase 1 - Ankunft (10 Min):</strong> Die Charaktere treffen sich 1927 bei einer Hochzeit am neu entstandenen Stausee.</p>
-      <p><strong>Phase 2 - Drei Streitfragen (30-45 Min):</strong> Diskutiert über die Rechtfertigung des Staudamms, möglichen Widerstand und die Bedeutung von Heimat.</p>
-      <p><strong>Phase 3 - Geheime Erinnerungen (15-20 Min):</strong> Jede Rolle offenbart eine persönliche, geheime Erinnerung - der emotionale Höhepunkt des Spiels.</p>
-      <p><strong>Phase 4 - Brief an die Zukunft (10-15 Min):</strong> Gemeinsam verfasst ihr einen Brief an das Jahr 2025 über das Erlebte.</p>
-    </div>
-
-    <div class="intro-section" style="text-align: center;">
-      <h2>Bereit zum Spielen?</h2>
-      <p style="margin-bottom: 25px;">Startet mit der Spielanleitung und verteilt dann die Rollen!</p>
-      <a href="talwasser-spielanleitung.html" class="btn btn-primary" style="margin-right: 15px;">Spielanleitung lesen</a>
-      <a href="talwasser_rollenkarten.html" class="btn btn-secondary">Rollenkarten verteilen</a>
-    </div>
-  </div>
+    <p>
+      <strong>3. Ausgang erleben 📜</strong><br>
+      Am Ende zeigt sich, welchen Weg Talwasser genommen hat.  
+      Hat der Fortschritt gesiegt – oder die Erinnerung? Wurde das Tal geopfert – oder bewahrt?  
+      Euer Zusammenspiel entscheidet über das Schicksal der Welt, die ihr erschaffen habt.
+    </p>
+  </main>
 
   <footer>
-    <p><strong>Talwasser</strong> - Ein Spiel über Erinnerung und Versöhnung</p>
-    <p>Basierend auf historischen Ereignissen im Wägital, Schweiz (1924)</p>
-    <p style="margin-top: 15px; opacity: 0.8;">© 2025 | Ein kooperatives Erzählspiel</p>
+    © 2025 Talwasser – ein Projekt für kooperatives Geschichtenerzählen
   </footer>
+
 </body>
 </html>
+
