@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talwasser Complete - Das vollständige Erlebnis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-title {
+            color: white;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 40px 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Home Section */
+        .home-section {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .home-section h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+
+        .home-section p {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .home-cards {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .home-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid #D4AF77;
+        }
+
+        .home-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .home-card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .home-card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .home-card p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* Rollenkarten Section */
+        .cards-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .warning-box {
+            background: #FFD93D;
+            border: 4px solid #FFA500;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .warning-box h2 {
+            color: #C70039;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .role-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card-wrapper {
+            perspective: 1000px;
+            height: 450px;
+        }
+
+        .role-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .role-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 5px solid #D4AF77;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: 5px solid #D4AF77;
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+
+        .card-front h2 {
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+
+        .card-front .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .card-front .hint {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .card-back h2 {
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card-info {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .card-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .card-info p {
+            color: #333;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .close-hint {
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 15px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* Spielbrett Section */
+        .game-board {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #8B7355 0%, #A0826D 100%);
+            border: 15px solid #5D4E37;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            padding: 30px;
+            position: relative;
+        }
+
+        .game-board::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #D4AF77;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .board-header {
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+
+        .board-header h2 {
+            font-size: 2.5em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .player-cards-board {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+
+        .player-card-board {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .player-card-board:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .player-score {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .score-display {
+            background: white;
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+
+        .score-btn {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border: 2px solid white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .score-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .center-board {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+
+        .timer-board {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+            border: 3px solid #D4AF77;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            color: #4ECDC4;
+        }
+
+        .timer-display.warning {
+            color: #FF6B6B;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .timer-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.pause {
+            background: linear-gradient(135deg, #F7971E 0%, #FFD200 100%);
+        }
+
+        button.reset {
+            background: linear-gradient(135deg, #ED213A 0%, #93291E 100%);
+        }
+
+        .phase-board {
+            margin-top: 20px;
+        }
+
+        .phase-item {
+            background: white;
+            margin: 12px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .phase-item:hover {
+            border-color: #667eea;
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .phase-header:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .phase-header.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .phase-content {
+            padding: 20px;
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .phase-content.active {
+            display: block;
+        }
+
+        .phase-content h3 {
+            color: #2c3e50;
+            margin: 15px 0 10px 0;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .phase-content ul, .phase-content ol {
+            margin: 10px 0 10px 25px;
+            line-height: 1.8;
+        }
+
+        .phase-content li {
+            margin: 8px 0;
+        }
+
+        .suno-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 3px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .suno-box h3 {
+            color: white !important;
+            border: none !important;
+            margin-bottom: 15px;
+        }
+
+        .suno-link {
+            display: inline-block;
+            background: white;
+            color: #f5576c;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        .suno-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .control-panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+
+        .notes-area {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 3px solid #D4AF77;
+            border-radius: 12px;
+            font-family: 'Georgia', serif;
+            font-size: 1em;
+            resize: vertical;
+            background: rgba(255,255,255,0.95);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .result-button {
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-size: 1.3em;
+            padding: 18px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 2px solid #D4AF77;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-title">🏔️ Talwasser Complete 💧</div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('home')">🏠 Start</button>
+                <button class="nav-btn" onclick="showSection('rollenkarten')">🎭 Rollenkarten</button>
+                <button class="nav-btn" onclick="showSection('spielbrett')">🎲 Spielbrett</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section home-section active">
+        <h1>🏔️ Talwasser - Das vollständige Erlebnis 💧</h1>
+        <p>Erlebe die Geschichte des versunkenen Innerthals</p>
+        
+        <div class="home-cards">
+            <div class="home-card" onclick="showSection('rollenkarten')">
+                <div class="home-card-icon">🎭</div>
+                <h2>Rollenkarten</h2>
+                <p>Wähle deine Rolle und tauche ein in die Geschichte der Familien Dobler und Schnyder. Jede Karte enthält geheime Erinnerungen und einzigartige Perspektiven.</p>
+            </div>
+
+            <div class="home-card" onclick="showSection('spielbrett')">
+                <div class="home-card-icon">🎲</div>
+                <h2>Spielbrett</h2>
+                <p>Spiele das Talwasser-Rollenspiel in 4 Phasen. Diskutiere, teile Erinnerungen und erschaffe gemeinsam das Talwasser-Lied mit Suno.com</p>
+            </div>
+
+            <div class="home-card" onclick="showSection('geschichte')">
+                <div class="home-card-icon">📖</div>
+                <h2>Die Geschichte</h2>
+                <p>1924 wurde das Innertal für den Bau des Wägitalersees geflutet. Familien verloren ihre Heimat. Erfahre mehr über die chronologische Geschichte des Staudammbaus.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rollenkarten Section -->
+    <section id="rollenkarten" class="section">
+        <div class="cards-container">
+            <div class="warning-box">
+                <h2>⚠️ WICHTIG ⚠️</h2>
+                <p>Jede Person wählt EINE Karte und liest nur diese!<br>
+                Die anderen Rollenkarten bleiben geheim!</p>
+            </div>
+
+            <div class="role-cards-grid">
+                <!-- Xaver -->
+                <div class="card-wrapper">
+                    <div class="role-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-face card-front">
+                            <div class="icon">🧑‍🌾</div>
+                            <h2>Xaver</h2>
+                            <div class="hint">👆 Klicken zum Aufdecken</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2>Xaver Dobler</h2>
+                            <div class="card-info">
+                                <h3>🎭 Charakter</h3>
+                                <p><strong>Der Pragmatiker</strong><br>
+                                Muuslöchlers Xaver - nach vorne blickend</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💭 Haltung</h3>
+                                <p>"Wir mussten das Beste daraus machen"</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>🤫 Geheime Erinnerung</h3>
+                                <p>Du träumst manchmal noch vom Alpsegen auf der Zindlen. Die alten Lieder hallen in deinem Kopf nach.</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💬 Dein Diskussionspunkt</h3>
+                                <p>Der Staudamm war unvermeidlich. Wir haben uns angepasst und überlebt - das ist was zählt.</p>
+                            </div>
+                            <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agnes -->
+                <div class="card-wrapper">
+                    <div class="role-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-face card-front">
+                            <div class="icon">👩‍🦰</div>
+                            <h2>Agnes</h2>
+                            <div class="hint">👆 Klicken zum Aufdecken</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2>Agnes Dobler</h2>
+                            <div class="card-info">
+                                <h3>🎭 Charakter</h3>
+                                <p><strong>Die Rebellin</strong><br>
+                                Später Maruszczyk - kritisch gegenüber Autorität</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💭 Haltung</h3>
+                                <p>"Die Behörden haben uns verkauft"</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>🤫 Geheime Erinnerung</h3>
+                                <p>Du vermisst das Frösche- und Forellenfangen mit deinem Bruder Seppli am Bach. Diese unbeschwerten Momente kommen nie wieder.</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💬 Dein Diskussionspunkt</h3>
+                                <p>Man hätte mehr Widerstand leisten müssen! Die Mächtigen haben über unsere Köpfe hinweg entschieden.</p>
+                            </div>
+                            <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rosa -->
+                <div class="card-wrapper">
+                    <div class="role-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-face card-front">
+                            <div class="icon">👵</div>
+                            <h2>Rosa</h2>
+                            <div class="hint">👆 Klicken zum Aufdecken</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2>Rosa Dobler</h2>
+                            <div class="card-info">
+                                <h3>🎭 Charakter</h3>
+                                <p><strong>Die Heimatverbundene</strong><br>
+                                Geb. Schnyder - ängstlich und sehnsüchtig</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💭 Haltung</h3>
+                                <p>"Wir haben unsere Geborgenheit verloren"</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>🤫 Geheime Erinnerung</h3>
+                                <p>Du fühlst dich auf dem neuen Hof nie ganz sicher. Nachts träumst du vom alten Haus und wachst verwirrt auf.</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💬 Dein Diskussionspunkt</h3>
+                                <p>Heimat ist nicht ersetzbar. Kein Geld der Welt kann aufwiegen, was wir verloren haben.</p>
+                            </div>
+                            <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dölf -->
+                <div class="card-wrapper">
+                    <div class="role-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-face card-front">
+                            <div class="icon">👨‍🦳</div>
+                            <h2>Dölf</h2>
+                            <div class="hint">👆 Klicken zum Aufdecken</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2>Dölf Dobler</h2>
+                            <div class="card-info">
+                                <h3>🎭 Charakter</h3>
+                                <p><strong>Der Analytiker</strong><br>
+                                Sieht beide Seiten - versöhnlich</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💭 Haltung</h3>
+                                <p>"Das Wasser hat zwei Seiten - Leben und Zerstörung"</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>🤫 Geheime Erinnerung</h3>
+                                <p>Dein Holzbein erinnert dich täglich an den Preis des "Fortschritts". Du hinkst zwischen alter und neuer Welt.</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💬 Dein Diskussionspunkt</h3>
+                                <p>Geschichte ist komplex. Der Staudamm brachte Fortschritt UND Verlust. Wir müssen beides anerkennen.</p>
+                            </div>
+                            <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Franz -->
+                <div class="card-wrapper">
+                    <div class="role-card" onclick="this.classList.toggle('flipped')">
+                        <div class="card-face card-front">
+                            <div class="icon">👴</div>
+                            <h2>Franz</h2>
+                            <div class="hint">👆 Klicken zum Aufdecken</div>
+                        </div>
+                        <div class="card-face card-back">
+                            <h2>Franz Schnyder</h2>
+                            <div class="card-info">
+                                <h3>🎭 Charakter</h3>
+                                <p><strong>Der Fortschrittsgläubige</strong><br>
+                                Rosas Vater - verteidigt die Modernisierung</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💭 Haltung</h3>
+                                <p>"Der Fortschritt war notwendig gegen die Armut"</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>🤫 Geheime Erinnerung</h3>
+                                <p>Du bereust manchmal deine Haltung, würdest es aber nie zugeben. In stillen Momenten fragst du dich: War es richtig?</p>
+                            </div>
+                            <div class="card-info">
+                                <h3>💬 Dein Diskussionspunkt</h3>
+                                <p>Die Armut im Tal war real! Der Staudamm brachte Elektrizität, Arbeit und Wohlstand in die Region.</p>
+                            </div>
+                            <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spielbrett Section -->
+    <section id="spielbrett" class="section">
+        <div class="game-board">
+            <div class="board-header">
+                <h2>🎲 Talwasser Spielbrett</h2>
+                <p>Ein Spiel über Heimat, Fortschritt und Erinnerung</p>
+            </div>
+
+            <div class="game-area">
+                <!-- Linke Seite: Spieler -->
+                <div class="player-cards-board">
+                    <div class="section-title">🎭 Spieler</div>
+                    
+                    <div class="player-card-board">
+                        <div class="player-name">Xaver</div>
+                        <div class="player-score">
+                            <button class="score-btn" onclick="changeScore('xaver', -1)">−</button>
+                            <div class="score-display" id="score-xaver">0</div>
+                            <button class="score-btn" onclick="changeScore('xaver', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="player-card-board">
+                        <div class="player-name">Agnes</div>
+                        <div class="player-score">
+                            <button class="score-btn" onclick="changeScore('agnes', -1)">−</button>
+                            <div class="score-display" id="score-agnes">0</div>
+                            <button class="score-btn" onclick="changeScore('agnes', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="player-card-board">
+                        <div class="player-name">Rosa</div>
+                        <div class="player-score">
+                            <button class="score-btn" onclick="changeScore('rosa', -1)">−</button>
+                            <div class="score-display" id="score-rosa">0</div>
+                            <button class="score-btn" onclick="changeScore('rosa', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="player-card-board">
+                        <div class="player-name">Dölf</div>
+                        <div class="player-score">
+                            <button class="score-btn" onclick="changeScore('dolf', -1)">−</button>
+                            <div class="score-display" id="score-dolf">0</div>
+                            <button class="score-btn" onclick="changeScore('dolf', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="player-card-board">
+                        <div class="player-name">Franz</div>
+                        <div class="player-score">
+                            <button class="score-btn" onclick="changeScore('franz', -1)">−</button>
+                            <div class="score-display" id="score-franz">0</div>
+                            <button class="score-btn" onclick="changeScore('franz', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mitte: Spielphasen -->
+                <div class="center-board">
+                    <div class="section-title">📋 Spielphasen</div>
+
+                    <div class="phase-board">
+                        <div class="phase-item">
+                            <div class="phase-header" onclick="togglePhase(1)">
+                                <span>Phase 1: Ankunft (10 Min)</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="phase-content" id="phase-1">
+                                <h3>🏞️ Szenario</h3>
+                                <p>Hochzeit von Kari und Anni (1927). Alle treffen beim Gasthaus am Stausee ein.</p>
+                                
+                                <h3>📝 Aufgabe</h3>
+                                <p>Jede Person beschreibt in <strong>1-2 Sätzen</strong>:</p>
+                                <ul>
+                                    <li>Wie fühlt sich ihre Figur bei der Ankunft am See?</li>
+                                    <li>Was sieht sie, wenn sie aufs Wasser blickt?</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="phase-item">
+                            <div class="phase-header" onclick="togglePhase(2)">
+                                <span>Phase 2: Drei Streitfragen (30-45 Min)</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="phase-content" id="phase-2">
+                                <h3>💬 Frage 1: War der Staudamm gerechtfertigt?</h3>
+                                <ul>
+                                    <li>Jede Person: 2 Minuten Stellungnahme</li>
+                                    <li>Offene Diskussion: 10 Minuten</li>
+                                    <li><strong>Punktevergabe:</strong> Bestes Argument? (1 Punkt)</li>
+                                </ul>
+
+                                <h3>💬 Frage 2: Hätte man mehr Widerstand leisten sollen?</h3>
+                                <ul>
+                                    <li>Jede Person: 2 Minuten Stellungnahme</li>
+                                    <li>Offene Diskussion: 10 Minuten</li>
+                                    <li><strong>Punktevergabe:</strong> Bestes Argument? (1 Punkt)</li>
+                                </ul>
+
+                                <h3>💬 Frage 3: Was bedeutet "Heimat"?</h3>
+                                <ul>
+                                    <li>Jede Person: 2 Minuten Stellungnahme</li>
+                                    <li>Offene Diskussion: 10 Minuten</li>
+                                    <li><strong>Punktevergabe:</strong> Bestes Argument? (1 Punkt)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="phase-item">
+                            <div class="phase-header" onclick="togglePhase(3)">
+                                <span>Phase 3: Geheime Erinnerungen (15-20 Min)</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="phase-content" id="phase-3">
+                                <h3>🤫 Ablauf</h3>
+                                <ol>
+                                    <li>Reihum teilt jede Person ihre geheime Erinnerung</li>
+                                    <li>Die anderen reagieren - <em>im Charakter</em></li>
+                                    <li>Welche Erinnerung berührte am meisten?</li>
+                                </ol>
+                                <p><strong>Punktevergabe:</strong> Berührendste Erinnerung = 2 Punkte</p>
+                                
+                                <h3>🎭 Die Erinnerungen</h3>
+                                <ul>
+                                    <li><strong>Xaver:</strong> Träumt vom Alpsegen auf der Zindlen</li>
+                                    <li><strong>Agnes:</strong> Vermisst das Fischen mit Seppli</li>
+                                    <li><strong>Rosa:</strong> Fühlt sich nie ganz sicher</li>
+                                    <li><strong>Dölf:</strong> Holzbein erinnert an den Preis</li>
+                                    <li><strong>Franz:</strong> Bereut heimlich seine Haltung</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="phase-item">
+                            <div class="phase-header" onclick="togglePhase(4)">
+                                <span>Phase 4: Das Talwasser-Lied (15-20 Min)</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="phase-content" id="phase-4">
+                                <h3>🎵 Aufgabe</h3>
+                                <p>Schreibt gemeinsam ein Lied über das versunkene Tal (4-8 Zeilen).</p>
+                                
+                                <p><em>Das Lied soll enthalten:</em></p>
+                                <ul>
+                                    <li>Erinnerung an das alte Tal</li>
+                                    <li>Gefühle der Charaktere</li>
+                                    <li>Botschaft über Heimat und Veränderung</li>
+                                </ul>
+                                
+                                <p><strong>Bonus:</strong> Alle zufrieden? +1 Punkt für alle!</p>
+                                
+                                <div class="suno-box">
+                                    <h3>🎼 Mit Suno zum echten Song!</h3>
+                                    <p>Verwandelt euren Liedtext in echte Musik:</p>
+                                    <a href="https://suno.com/home" target="_blank" class="suno-link">🎵 Zu Suno.com</a>
+                                    <ol style="margin-top: 15px; color: white;">
+                                        <li>Liedtext unten aufschreiben</li>
+                                        <li>Suno.com öffnen</li>
+                                        <li>Text eingeben</li>
+                                        <li>Stil wählen (z.B. "Swiss folk ballad", "melancholic Ländler")</li>
+                                        <li>Generieren & genießen! 🎶</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rechte Seite: Timer & Steuerung -->
+                <div class="control-panel">
+                    <div class="section-title">⏱️ Spielsteuerung</div>
+                    
+                    <div class="timer-board">
+                        <div class="timer-display" id="timerDisplay">00:00</div>
+                        
+                        <div class="timer-presets">
+                            <button onclick="setTimer(2)">2 Min</button>
+                            <button onclick="setTimer(10)">10 Min</button>
+                            <button onclick="setTimer(15)">15 Min</button>
+                            <button onclick="setTimer(30)">30 Min</button>
+                        </div>
+                        
+                        <div class="timer-controls">
+                            <button onclick="startTimer()">▶ Start</button>
+                            <button class="pause" onclick="pauseTimer()">⏸ Pause</button>
+                            <button class="reset" onclick="resetTimer()">↻ Reset</button>
+                        </div>
+                    </div>
+
+                    <div class="notes-area">
+                        <h3>📝 Notizen & Liedtext</h3>
+                        <textarea id="sharedNotes" placeholder="Hier Notizen oder Liedtext schreiben..."></textarea>
+                    </div>
+
+                    <button class="result-button" onclick="showResults()">🏆 Endergebnis zeigen</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Geschichte Section -->
+    <section id="geschichte" class="section">
+        <div class="cards-container">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div class="warning-box" style="background: #667eea; border-color: #D4AF77;">
+                    <h2 style="color: white;">📖 Die Geschichte des Wägitalersees</h2>
+                    <p style="color: white; font-size: 1.3em;">Die vollständige chronologische Geschichte des Staudammbaus findest du im separaten Artefakt.</p>
+                </div>
+                
+                <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 3px solid #D4AF77; margin-top: 30px;">
+                    <h2 style="color: #2c3e50; font-size: 2.2em; margin-bottom: 20px;">So öffnest du die Geschichte:</h2>
+                    
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 5px solid #667eea;">
+                        <h3 style="color: #2c3e50; font-size: 1.5em; margin-bottom: 15px;">Schritt 1</h3>
+                        <p style="font-size: 1.1em; line-height: 1.8;">Scrolle in diesem Chat nach oben zu meinen vorherigen Antworten</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 5px solid #667eea;">
+                        <h3 style="color: #2c3e50; font-size: 1.5em; margin-bottom: 15px;">Schritt 2</h3>
+                        <p style="font-size: 1.1em; line-height: 1.8;">Suche nach dem Artefakt mit dem Titel <strong>"Talwasser - Die Geschichte"</strong></p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 5px solid #667eea;">
+                        <h3 style="color: #2c3e50; font-size: 1.5em; margin-bottom: 15px;">Schritt 3</h3>
+                        <p style="font-size: 1.1em; line-height: 1.8;">Klicke rechts oben im Artefakt auf das <strong>↗️ Symbol</strong> und wähle <strong>"In neuem Fenster öffnen"</strong></p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 30px; border-radius: 15px; margin-top: 30px;">
+                        <h3 style="color: white; font-size: 1.8em; margin-bottom: 15px;">📚 Was dich erwartet:</h3>
+                        <ul style="margin-left: 25px; line-height: 2; font-size: 1.1em;">
+                            <li>Chronologische Timeline von 1918-1926</li>
+                            <li>Das Leben im Innertal vor der Flutung</li>
+                            <li>Zahlen und Fakten zum Staudammbau</li>
+                            <li>Zeitzeugenberichte und Perspektiven</li>
+                            <li>Die Auswirkungen damals und heute</li>
+                            <li>Der Wägitalersee in der Gegenwart</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Timer
+        let timer = null;
+        let timeLeft = 0;
+        let totalTime = 0;
+        
+        const storage = {
+            scores: {
+                xaver: 0,
+                agnes: 0,
+                rosa: 0,
+                dolf: 0,
+                franz: 0
+            },
+            currentPhase: 1,
+            sharedNotes: ''
+        };
+
+        const names = {
+            xaver: 'Xaver',
+            agnes: 'Agnes',
+            rosa: 'Rosa',
+            dolf: 'Dölf',
+            franz: 'Franz'
+        };
+
+        function setTimer(minutes) {
+            timeLeft = minutes * 60;
+            totalTime = timeLeft;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = document.getElementById('timerDisplay');
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (timeLeft <= 60 && timeLeft > 0) {
+                display.classList.add('warning');
+            } else {
+                display.classList.remove('warning');
+            }
+        }
+
+        function startTimer() {
+            if (timer) return;
+            
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    alert('⏰ Zeit abgelaufen!');
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = totalTime;
+            updateTimerDisplay();
+        }
+
+        function changeScore(player, delta) {
+            storage.scores[player] = Math.max(0, storage.scores[player] + delta);
+            document.getElementById(`score-${player}`).textContent = storage.scores[player];
+        }
+
+        function togglePhase(phaseNum) {
+            const content = document.getElementById(`phase-${phaseNum}`);
+            const header = content.previousElementSibling;
+            
+            const isActive = content.classList.contains('active');
+            
+            document.querySelectorAll('.phase-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.phase-header').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                content.classList.add('active');
+                header.classList.add('active');
+                storage.currentPhase = phaseNum;
+            }
+        }
+
+        function showResults() {
+            const sorted = Object.entries(storage.scores)
+                .sort((a, b) => b[1] - a[1]);
+            
+            let message = '🏆 ENDERGEBNIS 🏆\n\n';
+            sorted.forEach(([player, score], index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+                message += `${medal} ${names[player]}: ${score} Punkte\n`;
+            });
+            
+            message += '\n';
+            const allAboveThree = sorted.every(([,score]) => score >= 3);
+            if (allAboveThree) {
+                message += '✨ VERSÖHNTE FAMILIE ✨\nAlle haben mindestens 3 Punkte - Gruppensieg!';
+            } else {
+                message += `👑 ${names[sorted[0][0]]} ist die "Stimme der Familie"!`;
+            }
+            
+            alert(message);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            Object.keys(storage.scores).forEach(player => {
+                const el = document.getElementById(`score-${player}`);
+                if (el) el.textContent = storage.scores[player];
+            });
+            
+            const notes = document.getElementById('sharedNotes');
+            if (notes) {
+                notes.value = storage.sharedNotes;
+                notes.addEventListener('input', (e) => {
+                    storage.sharedNotes = e.target.value;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
