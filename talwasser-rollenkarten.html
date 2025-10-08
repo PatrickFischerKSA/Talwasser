@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talwasser - Rollenkarten</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .warning-box {
+            background: #FFD93D;
+            border: 4px solid #FFA500;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .warning-box h2 {
+            color: #C70039;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .warning-box p {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .card-wrapper {
+            perspective: 1000px;
+            height: 450px;
+        }
+        
+        .role-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .role-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 5px solid #D4AF77;
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: 5px solid #D4AF77;
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+        
+        .card-front h2 {
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+        
+        .card-front .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .card-front .hint {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        
+        .card-back h2 {
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .card-info {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .card-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+        
+        .card-info p {
+            color: #333;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        
+        .close-hint {
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 15px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        .instructions {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 3px solid #D4AF77;
+        }
+        
+        .instructions h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .instructions ol {
+            margin-left: 25px;
+            line-height: 2;
+            font-size: 1.1em;
+        }
+        
+        .instructions li {
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-wrapper {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏔️ Talwasser - Rollenkarten 💧</h1>
+            <p>Ein Rollenspiel über Heimat, Fortschritt und Erinnerung</p>
+        </header>
+
+        <div class="warning-box">
+            <h2>⚠️ WICHTIG ⚠️</h2>
+            <p>Jede Person wählt EINE Karte und liest nur diese!<br>
+            Die anderen Rollenkarten bleiben geheim!</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- Xaver -->
+            <div class="card-wrapper">
+                <div class="role-card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-face card-front">
+                        <div class="icon">🧑‍🌾</div>
+                        <h2>Xaver</h2>
+                        <div class="hint">👆 Klicken zum Aufdecken</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h2>Xaver Dobler</h2>
+                        <div class="card-info">
+                            <h3>🎭 Charakter</h3>
+                            <p><strong>Der Pragmatiker</strong><br>
+                            Muuslöchlers Xaver - nach vorne blickend</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💭 Haltung</h3>
+                            <p>"Wir mussten das Beste daraus machen"</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>🤫 Geheime Erinnerung</h3>
+                            <p>Du träumst manchmal noch vom Alpsegen auf der Zindlen. Die alten Lieder hallen in deinem Kopf nach.</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💬 Dein Diskussionspunkt</h3>
+                            <p>Der Staudamm war unvermeidlich. Wir haben uns angepasst und überlebt - das ist was zählt.</p>
+                        </div>
+                        <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agnes -->
+            <div class="card-wrapper">
+                <div class="role-card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-face card-front">
+                        <div class="icon">👩‍🦰</div>
+                        <h2>Agnes</h2>
+                        <div class="hint">👆 Klicken zum Aufdecken</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h2>Agnes Dobler</h2>
+                        <div class="card-info">
+                            <h3>🎭 Charakter</h3>
+                            <p><strong>Die Rebellin</strong><br>
+                            Später Maruszczyk - kritisch gegenüber Autorität</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💭 Haltung</h3>
+                            <p>"Die Behörden haben uns verkauft"</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>🤫 Geheime Erinnerung</h3>
+                            <p>Du vermisst das Frösche- und Forellenfangen mit deinem Bruder Seppli am Bach. Diese unbeschwerten Momente kommen nie wieder.</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💬 Dein Diskussionspunkt</h3>
+                            <p>Man hätte mehr Widerstand leisten müssen! Die Mächtigen haben über unsere Köpfe hinweg entschieden.</p>
+                        </div>
+                        <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rosa -->
+            <div class="card-wrapper">
+                <div class="role-card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-face card-front">
+                        <div class="icon">👵</div>
+                        <h2>Rosa</h2>
+                        <div class="hint">👆 Klicken zum Aufdecken</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h2>Rosa Dobler</h2>
+                        <div class="card-info">
+                            <h3>🎭 Charakter</h3>
+                            <p><strong>Die Heimatverbundene</strong><br>
+                            Geb. Schnyder - ängstlich und sehnsüchtig</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💭 Haltung</h3>
+                            <p>"Wir haben unsere Geborgenheit verloren"</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>🤫 Geheime Erinnerung</h3>
+                            <p>Du fühlst dich auf dem neuen Hof nie ganz sicher. Nachts träumst du vom alten Haus und wachst verwirrt auf.</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💬 Dein Diskussionspunkt</h3>
+                            <p>Heimat ist nicht ersetzbar. Kein Geld der Welt kann aufwiegen, was wir verloren haben.</p>
+                        </div>
+                        <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dölf -->
+            <div class="card-wrapper">
+                <div class="role-card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-face card-front">
+                        <div class="icon">👨‍🦳</div>
+                        <h2>Dölf</h2>
+                        <div class="hint">👆 Klicken zum Aufdecken</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h2>Dölf Dobler</h2>
+                        <div class="card-info">
+                            <h3>🎭 Charakter</h3>
+                            <p><strong>Der Analytiker</strong><br>
+                            Sieht beide Seiten - versöhnlich</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💭 Haltung</h3>
+                            <p>"Das Wasser hat zwei Seiten - Leben und Zerstörung"</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>🤫 Geheime Erinnerung</h3>
+                            <p>Dein Holzbein erinnert dich täglich an den Preis des "Fortschritts". Du hinkt zwischen alter und neuer Welt.</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💬 Dein Diskussionspunkt</h3>
+                            <p>Geschichte ist komplex. Der Staudamm brachte Fortschritt UND Verlust. Wir müssen beides anerkennen.</p>
+                        </div>
+                        <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Franz -->
+            <div class="card-wrapper">
+                <div class="role-card" onclick="this.classList.toggle('flipped')">
+                    <div class="card-face card-front">
+                        <div class="icon">👴</div>
+                        <h2>Franz</h2>
+                        <div class="hint">👆 Klicken zum Aufdecken</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h2>Franz Schnyder</h2>
+                        <div class="card-info">
+                            <h3>🎭 Charakter</h3>
+                            <p><strong>Der Fortschrittsgläubige</strong><br>
+                            Rosas Vater - verteidigt die Modernisierung</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💭 Haltung</h3>
+                            <p>"Der Fortschritt war notwendig gegen die Armut"</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>🤫 Geheime Erinnerung</h3>
+                            <p>Du bereust manchmal deine Haltung, würdest es aber nie zugeben. In stillen Momenten fragst du dich: War es richtig?</p>
+                        </div>
+                        <div class="card-info">
+                            <h3>💬 Dein Diskussionspunkt</h3>
+                            <p>Die Armut im Tal war real! Der Staudamm brachte Elektrizität, Arbeit und Wohlstand in die Region.</p>
+                        </div>
+                        <div class="close-hint">👆 Nochmal klicken zum Schließen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>📋 Wie funktioniert's?</h2>
+            <ol>
+                <li><strong>Wähle eine Rollenkarte</strong> - Jede Person nimmt eine andere Karte</li>
+                <li><strong>Klicke auf deine Karte</strong> - Die Karte dreht sich und zeigt deine Rolleninformationen</li>
+                <li><strong>Lies deine Rolle sorgfältig</strong> - Merke dir deine Haltung und geheime Erinnerung</li>
+                <li><strong>Halte es geheim</strong> - Die anderen dürfen deine Informationen nicht sehen!</li>
+                <li><strong>Spiele deine Rolle</strong> - Argumentiere aus der Perspektive deines Charakters</li>
+                <li><strong>Habe Spaß!</strong> - Es geht um das gemeinsame Erleben und Verstehen 🎭</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
