@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stausee Rollenspiel - Spielleiter Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+        
+        .content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .timer-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .timer-display {
+            font-size: 3em;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+        
+        .timer-display.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .preset-times {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        .preset-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 8px 12px;
+            font-size: 0.9em;
+        }
+        
+        .scores-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .score-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .score-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .score-btn {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            font-size: 1.2em;
+            border-radius: 50%;
+        }
+        
+        .phase-section {
+            margin-bottom: 30px;
+        }
+        
+        .phase-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .phase-header:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .phase-header.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .phase-content {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .phase-content.active {
+            display: block;
+        }
+        
+        .phase-content h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .phase-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .phase-content ul, .phase-content ol {
+            margin: 10px 0 10px 20px;
+            line-height: 1.8;
+        }
+        
+        .notes-section {
+            margin-top: 30px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Georgia', serif;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .result-btn {
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-size: 1.1em;
+            padding: 15px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin: 15px 0 10px 0;
+        }
+        
+        strong {
+            color: #667eea;
+        }
+        
+        em {
+            color: #6c757d;
+        }
+
+        .suno-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .suno-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+        }
+
+        .suno-instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏔️ Talwasser Rollenspiel 💧</h1>
+            <p>Ein Spiel über Heimat, Fortschritt und Erinnerung</p>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="timer-section">
+                    <h3>⏱️ Timer</h3>
+                    <div class="timer-display" id="timerDisplay">00:00</div>
+                    
+                    <div class="preset-times">
+                        <button class="preset-btn" onclick="setTimer(2)">2 Min</button>
+                        <button class="preset-btn" onclick="setTimer(10)">10 Min</button>
+                        <button class="preset-btn" onclick="setTimer(15)">15 Min</button>
+                        <button class="preset-btn" onclick="setTimer(30)">30 Min</button>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button onclick="startTimer()">Start</button>
+                        <button class="secondary" onclick="pauseTimer()">Pause</button>
+                        <button class="danger" onclick="resetTimer()">Reset</button>
+                    </div>
+                </div>
+
+                <div class="scores-section">
+                    <h3>🎭 Punkte</h3>
+                    <div class="score-item">
+                        <span class="score-name">Xaver</span>
+                        <div class="score-controls">
+                            <button class="score-btn" onclick="changeScore('xaver', -1)">−</button>
+                            <span class="score-value" id="score-xaver">0</span>
+                            <button class="score-btn" onclick="changeScore('xaver', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-name">Agnes</span>
+                        <div class="score-controls">
+                            <button class="score-btn" onclick="changeScore('agnes', -1)">−</button>
+                            <span class="score-value" id="score-agnes">0</span>
+                            <button class="score-btn" onclick="changeScore('agnes', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-name">Rosa</span>
+                        <div class="score-controls">
+                            <button class="score-btn" onclick="changeScore('rosa', -1)">−</button>
+                            <span class="score-value" id="score-rosa">0</span>
+                            <button class="score-btn" onclick="changeScore('rosa', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-name">Dölf</span>
+                        <div class="score-controls">
+                            <button class="score-btn" onclick="changeScore('dolf', -1)">−</button>
+                            <span class="score-value" id="score-dolf">0</span>
+                            <button class="score-btn" onclick="changeScore('dolf', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-name">Franz</span>
+                        <div class="score-controls">
+                            <button class="score-btn" onclick="changeScore('franz', -1)">−</button>
+                            <span class="score-value" id="score-franz">0</span>
+                            <button class="score-btn" onclick="changeScore('franz', 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="result-btn" onclick="showResults()">🏆 Endergebnis</button>
+                </div>
+            </aside>
+
+            <main class="content">
+                <h2>📋 Spielablauf (60-90 Minuten)</h2>
+
+                <div class="phase-section">
+                    <div class="phase-header" onclick="togglePhase(1)">
+                        <span>Phase 1: Ankunft (10 Min)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="phase-content" id="phase-1">
+                        <h3>🏞️ Szenario</h3>
+                        <p>Hochzeit von Kari und Anni (1927). Alle treffen beim Gasthaus am Stausee ein.</p>
+                        
+                        <h3>📝 Aufgabe</h3>
+                        <p>Jede Person beschreibt in <strong>1-2 Sätzen</strong>:</p>
+                        <ul>
+                            <li>Wie fühlt sich ihre Figur bei der Ankunft am See?</li>
+                            <li>Was sieht sie, wenn sie aufs Wasser blickt?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-header" onclick="togglePhase(2)">
+                        <span>Phase 2: Die drei Streitfragen (30-45 Min)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="phase-content" id="phase-2">
+                        <h3>💬 Frage 1: War der Staudamm gerechtfertigt?</h3>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> Wessen Argument war am überzeugendsten? (1 Punkt)</li>
+                        </ul>
+
+                        <h3>💬 Frage 2: Hätte man mehr Widerstand leisten sollen?</h3>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> Wessen Argument war am überzeugendsten? (1 Punkt)</li>
+                        </ul>
+
+                        <h3>💬 Frage 3: Was bedeutet "Heimat" für euch?</h3>
+                        <ul>
+                            <li>Jede Person: 2 Minuten Stellungnahme</li>
+                            <li>Offene Diskussion: 10 Minuten</li>
+                            <li><strong>Punktevergabe:</strong> Wessen Argument war am überzeugendsten? (1 Punkt)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-header" onclick="togglePhase(3)">
+                        <span>Phase 3: Die geheime Erinnerung (15-20 Min)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="phase-content" id="phase-3">
+                        <h3>🤫 Ablauf</h3>
+                        <p>Nun dürfen alle ihre <strong>geheime Erinnerung</strong> preisgeben.</p>
+                        <ol>
+                            <li>Reihum teilt jede Person ihre geheime Erinnerung</li>
+                            <li>Die anderen reagieren darauf - <em>im Charakter</em></li>
+                            <li>Gemeinsam entscheidet die Gruppe: Welche Erinnerung hat sie am meisten berührt?</li>
+                        </ol>
+                        <p><strong>Punktevergabe:</strong> Die berührendste Erinnerung erhält 2 Punkte!</p>
+                        
+                        <h3>🎭 Die geheimen Erinnerungen</h3>
+                        <ul>
+                            <li><strong>Xaver:</strong> Du träumst manchmal noch vom Alpsegen auf der Zindlen</li>
+                            <li><strong>Agnes:</strong> Du vermisst das Frösche- und Forellenfangen mit Seppli</li>
+                            <li><strong>Rosa:</strong> Du fühlst dich auf dem neuen Hof nie ganz sicher</li>
+                            <li><strong>Dölf:</strong> Dein Holzbein erinnert dich täglich an den Preis des "Fortschritts"</li>
+                            <li><strong>Franz:</strong> Du bereust manchmal deine Haltung, würdest es aber nie zugeben</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase-section">
+                    <div class="phase-header" onclick="togglePhase(4)">
+                        <span>Phase 4: Das Talwasser-Lied (15-20 Min)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="phase-content" id="phase-4">
+                        <h3>🎵 Aufgabe</h3>
+                        <p>Schreibt gemeinsam ein Lied über das versunkene Tal (4-8 Zeilen).</p>
+                        
+                        <p><em>Das Lied soll enthalten:</em></p>
+                        <ul>
+                            <li>Die Erinnerung an das alte Tal</li>
+                            <li>Die Gefühle der verschiedenen Charaktere</li>
+                            <li>Eine Botschaft über Heimat und Veränderung</li>
+                        </ul>
+                        
+                        <p><strong>Bonus:</strong> Wenn alle mit dem Lied zufrieden sind: +1 Punkt für alle!</p>
+                        
+                        <div class="suno-instructions">
+                            <h3>🎼 Mit Suno zum echten Song!</h3>
+                            <p>Besucht <a href="https://suno.com/home" target="_blank" class="suno-link">🎵 suno.com</a> und verwandelt euren Liedtext in echte Musik!</p>
+                            <p><strong>So geht's:</strong></p>
+                            <ol>
+                                <li>Liedtext unten im Notizfeld aufschreiben</li>
+                                <li>Suno.com öffnen</li>
+                                <li>Liedtext eingeben</li>
+                                <li>Musikstil wählen (z.B. "Swiss folk ballad", "melancholic Ländler", "alpine folk song")</li>
+                                <li>2 Versionen generieren lassen</li>
+                                <li>Gemeinsam die beste Version wählen! 🎶</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <h2>📝 Gemeinsame Notizen & Liedtext</h2>
+                    <textarea id="sharedNotes" placeholder="Hier könnt ihr gemeinsame Notizen machen oder euren Liedtext schreiben..."></textarea>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let timer = null;
+        let timeLeft = 0;
+        let totalTime = 0;
+        
+        const storage = {
+            scores: {
+                xaver: 0,
+                agnes: 0,
+                rosa: 0,
+                dolf: 0,
+                franz: 0
+            },
+            currentPhase: 1,
+            sharedNotes: ''
+        };
+
+        const names = {
+            xaver: 'Xaver',
+            agnes: 'Agnes',
+            rosa: 'Rosa',
+            dolf: 'Dölf',
+            franz: 'Franz'
+        };
+
+        function setTimer(minutes) {
+            timeLeft = minutes * 60;
+            totalTime = timeLeft;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = document.getElementById('timerDisplay');
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (timeLeft <= 60 && timeLeft > 0) {
+                display.classList.add('warning');
+            } else {
+                display.classList.remove('warning');
+            }
+        }
+
+        function startTimer() {
+            if (timer) return;
+            
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    alert('⏰ Zeit abgelaufen!');
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = totalTime;
+            updateTimerDisplay();
+        }
+
+        function changeScore(player, delta) {
+            storage.scores[player] = Math.max(0, storage.scores[player] + delta);
+            document.getElementById(`score-${player}`).textContent = storage.scores[player];
+        }
+
+        function togglePhase(phaseNum) {
+            const content = document.getElementById(`phase-${phaseNum}`);
+            const header = content.previousElementSibling;
+            
+            const isActive = content.classList.contains('active');
+            
+            document.querySelectorAll('.phase-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.phase-header').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                content.classList.add('active');
+                header.classList.add('active');
+                storage.currentPhase = phaseNum;
+            }
+        }
+
+        function showResults() {
+            const sorted = Object.entries(storage.scores)
+                .sort((a, b) => b[1] - a[1]);
+            
+            let message = '🏆 ENDERGEBNIS 🏆\n\n';
+            sorted.forEach(([player, score], index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+                message += `${medal} ${names[player]}: ${score} Punkte\n`;
+            });
+            
+            message += '\n';
+            const allAboveThree = sorted.every(([,score]) => score >= 3);
+            if (allAboveThree) {
+                message += '✨ VERSÖHNTE FAMILIE ✨\nAlle haben mindestens 3 Punkte - Gruppensieg!';
+            } else {
+                message += `👑 ${names[sorted[0][0]]} ist die "Stimme der Familie"!`;
+            }
+            
+            alert(message);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            Object.keys(storage.scores).forEach(player => {
+                const el = document.getElementById(`score-${player}`);
+                if (el) el.textContent = storage.scores[player];
+            });
+            
+            togglePhase(storage.currentPhase);
+            
+            const notes = document.getElementById('sharedNotes');
+            if (notes) {
+                notes.value = storage.sharedNotes;
+                notes.addEventListener('input', (e) => {
+                    storage.sharedNotes = e.target.value;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
